@@ -145,9 +145,33 @@
                   <div id="downloadInfo" style="display: none; margin-top: 20px;">
                       <hr>
                       <div class="alert alert-info">
-                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">点击下载</a></p>
-                          <p><strong>提取码：</strong><span id="modalExtractCode"></span></p>
-                          <p><strong>解压密码：</strong><span id="modalUnzipPassword"></span></p>
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[百度网盘]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode')">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUnzipPassword"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUnzipPassword')">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
                       </div>
                   </div>
               </div>
@@ -177,7 +201,7 @@
 
       function initializeCounter() {
         const params = getQueryParams();
-        let cnt = (1 + 2 + 3) * 10; // 默认支付时间
+        let cnt = 0; // 默认支付时间
 
         if (params.debug === 'true' && params.cnt) {
           cnt = parseInt(params.cnt, 10);
@@ -213,7 +237,6 @@
                   // 显示下载信息
                   downloadInfo.style.display = 'block';
                   document.getElementById('modalDownloadLink').href = downloadUrl;
-                  document.getElementById('modalDownloadLink').textContent = downloadUrl;
                   document.getElementById('modalExtractCode').textContent = extractCode;
                   document.getElementById('modalUnzipPassword').textContent = unzipPassword;
 
@@ -249,6 +272,56 @@
         var modalInstance = bootstrap.Modal.getInstance(document.getElementById('downloadModal'));
         if (modalInstance) {
           modalInstance.hide();
+        }
+      }
+
+      // 复制到剪贴板
+      function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).textContent;
+        
+        // 使用现代的 Clipboard API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            // 显示复制成功提示
+            const button = event.target.closest('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg> 已复制';
+            button.classList.add('btn-success');
+            button.classList.remove('btn-outline-secondary');
+            
+            setTimeout(function() {
+              button.innerHTML = originalHTML;
+              button.classList.remove('btn-success');
+              button.classList.add('btn-outline-secondary');
+            }, 2000);
+          }).catch(function(err) {
+            alert('复制失败，请手动复制：' + text);
+          });
+        } else {
+          // 降级方案：使用旧的 execCommand 方法
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand('copy');
+            const button = event.target.closest('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg> 已复制';
+            button.classList.add('btn-success');
+            button.classList.remove('btn-outline-secondary');
+            
+            setTimeout(function() {
+              button.innerHTML = originalHTML;
+              button.classList.remove('btn-success');
+              button.classList.add('btn-outline-secondary');
+            }, 2000);
+          } catch (err) {
+            alert('复制失败，请手动复制：' + text);
+          }
+          document.body.removeChild(textarea);
         }
       }
 
