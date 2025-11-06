@@ -43,15 +43,11 @@
                   <h4 class="card-title">世奇 TV版 第一季</h4>
                   <ul class="list-group">
                     <li class="list-group-item list-group-item-primary">收录了世界奇妙物语第一季 001-039 TV 版的全部剧集</li>
-                    <li class="list-group-item list-group-item-success">提取码：
-                      <img src="https://img.shields.io/badge/baidu-****-green.svg" data-bs-toggle="1234" title="提取码"> 
-                    </li>
-                    <li class="list-group-item list-group-item-warning">解压密码：
-                      <img src="https://img.shields.io/badge/7z-****-green.svg" data-bs-toggle="abcd" title="解压密码"> 
-                    </li>
+                    <li class="list-group-item list-group-item-success">提取码：****</li>
+                    <li class="list-group-item list-group-item-warning">解压密码：****</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <a target="_blank" href="./res/tv/世にも奇妙な物語/TV版/menu1.txt">[目录]</a>
-                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" data-bs-download="FIXME 下载链接">[百度网盘]</button>
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" data-bs-download="FIXME 下载链接" data-extract-code="1234" data-unzip-password="abcd">[百度网盘]</button>
                     </li>
                   </ul>
                 </div>
@@ -76,11 +72,11 @@
                   <h4 class="card-title">世奇 TV版 第二季</h4>
                   <ul class="list-group">
                     <li class="list-group-item list-group-item-primary">收录了世界奇妙物语第二季 040-177 TV 版的部分剧集</li>
-                    <li class="list-group-item list-group-item-success">提取码： 1234</li>
-                    <li class="list-group-item list-group-item-warning">解压密码： abcd</li>
+                    <li class="list-group-item list-group-item-success">提取码：****</li>
+                    <li class="list-group-item list-group-item-warning">解压密码：****</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <a target="_blank" href="./res/tv/世にも奇妙な物語/TV版/menu2.txt">[目录]</a>
-                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" data-bs-download="#">[百度网盘]</button>
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" data-bs-download="#" data-extract-code="1234" data-unzip-password="abcd">[百度网盘]</button>
                     </li>
                   </ul>
                 </div>
@@ -105,11 +101,11 @@
                   <h4 class="card-title">世奇 TV版 第三季</h4>
                   <ul class="list-group">
                     <li class="list-group-item list-group-item-primary">收录了世界奇妙物语第三季 178-238 TV 版的部分剧集</li>
-                    <li class="list-group-item list-group-item-success">提取码： 1234</li>
-                    <li class="list-group-item list-group-item-warning">解压密码： abcd</li>
+                    <li class="list-group-item list-group-item-success">提取码：****</li>
+                    <li class="list-group-item list-group-item-warning">解压密码：****</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <a target="_blank" href="./res/tv/世にも奇妙な物語/TV版/menu3.txt">[目录]</a>
-                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" data-bs-download="#">[百度网盘]</button>
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" data-bs-download="#" data-extract-code="1234" data-unzip-password="abcd">[百度网盘]</button>
                     </li>
                   </ul>
                 </div>
@@ -145,6 +141,14 @@
                       <img src="./imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
                       <img src="./imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
                       <img src="./imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">点击下载</a></p>
+                          <p><strong>提取码：</strong><span id="modalExtractCode"></span></p>
+                          <p><strong>解压密码：</strong><span id="modalUnzipPassword"></span></p>
+                      </div>
                   </div>
               </div>
               <div class="modal-footer">
@@ -188,7 +192,13 @@
       document.getElementById('downloadModal').addEventListener('show.bs.modal', function (event) {
           const button = event.relatedTarget;
           const downloadUrl = button.getAttribute('data-bs-download');
+          const extractCode = button.getAttribute('data-extract-code');
+          const unzipPassword = button.getAttribute('data-unzip-password');
           const confirmButton = document.getElementById('confirmButton');
+          const downloadInfo = document.getElementById('downloadInfo');
+
+          // 隐藏下载信息
+          downloadInfo.style.display = 'none';
 
           confirmButton.disabled = true;
           confirmButton.textContent = `我已支付 (${cnt})`;
@@ -199,6 +209,14 @@
                   clearInterval(timer);
                   confirmButton.disabled = false;
                   confirmButton.textContent = '我已支付';
+                  
+                  // 显示下载信息
+                  downloadInfo.style.display = 'block';
+                  document.getElementById('modalDownloadLink').href = downloadUrl;
+                  document.getElementById('modalDownloadLink').textContent = downloadUrl;
+                  document.getElementById('modalExtractCode').textContent = extractCode;
+                  document.getElementById('modalUnzipPassword').textContent = unzipPassword;
+
                   confirmButton.onclick = function () {
                     const a = document.createElement('a');
                     a.href = downloadUrl;
