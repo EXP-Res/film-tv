@@ -122,28 +122,32 @@ document.addEventListener('DOMContentLoaded', function() {
         clearInterval(timer);
         confirmButton.disabled = false;
         confirmButton.textContent = '我已支付';
-        
-        // 显示下载信息
-        downloadInfo.style.display = 'block';
-        document.getElementById('modalDownloadLink').href = downloadUrl;
-        document.getElementById('modalExtractCode').textContent = extractCode;
-        document.getElementById('modalUnzipPassword').textContent = unzipPassword;
 
         confirmButton.onclick = function () {
-          const a = document.createElement('a');
-          a.href = downloadUrl;
-          a.download = '';
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          closeModal();
-        };
+          // 显示下载信息
+          downloadInfo.style.display = 'block';
+          document.getElementById('modalDownloadLink').href = downloadUrl;
+          document.getElementById('modalExtractCode').textContent = extractCode;
+          document.getElementById('modalUnzipPassword').textContent = unzipPassword;
 
-        // 在支付倒计时结束后的 30 秒内，若用户没有点击【我已支付】按钮，则自动关闭
-        autoCloseTimer = setTimeout(function () {
-          closeModal();
-        }, 30000);
+          // 禁用按钮，防止重复点击
+          confirmButton.disabled = true;
+          confirmButton.textContent = '下载中...';
+
+          // 可选：触发下载
+          // const a = document.createElement('a');
+          // a.href = downloadUrl;
+          // a.download = '';
+          // a.target = '_blank';
+          // document.body.appendChild(a);
+          // a.click();
+          // document.body.removeChild(a);
+
+          // 在显示下载信息后的 30 秒内自动关闭
+          // autoCloseTimer = setTimeout(function () {
+          //   closeModal();
+          // }, 30000);
+        };
       } else {
         confirmButton.textContent = `我已支付 (${cnt})`;
       }
