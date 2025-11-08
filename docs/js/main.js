@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
           // 禁用按钮，防止重复点击
           confirmButton.disabled = true;
-          confirmButton.textContent = '下载中...';
+          confirmButton.textContent = '请打开下载链接并保存解压密码';
 
           // 可选：触发下载
           // const a = document.createElement('a');
