@@ -104,9 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // 下载模态框事件监听
   document.getElementById('downloadModal').addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget;
+    const modalUUID = button.getAttribute('data-uuid');
     const downloadUrl = button.getAttribute('data-bs-download');
     const extractCode = button.getAttribute('data-extract-code');
-    const unzipPassword = button.getAttribute('data-unzip-password');
     const confirmButton = document.getElementById('confirmButton');
     const downloadInfo = document.getElementById('downloadInfo');
 
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
           downloadInfo.style.display = 'block';
           document.getElementById('modalDownloadLink').href = downloadUrl;
           document.getElementById('modalExtractCode').textContent = extractCode;
-          document.getElementById('modalUnzipPassword').textContent = unzipPassword;
+          document.getElementById('modalUUID').textContent = modalUUID;
 
           // 禁用按钮，防止重复点击
           confirmButton.disabled = true;
