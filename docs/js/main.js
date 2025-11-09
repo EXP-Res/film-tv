@@ -105,10 +105,17 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('downloadModal').addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget;
     const modalUUID = button.getAttribute('data-uuid');
-    const downloadUrl = button.getAttribute('data-bs-download');
-    const extractCode = button.getAttribute('data-extract-code');
     const confirmButton = document.getElementById('confirmButton');
     const downloadInfo = document.getElementById('downloadInfo');
+    const downloadUrl = button.getAttribute('data-bs-download');
+    
+    let extractCode = '0000';
+    try {
+      const url = new URL(downloadUrl);
+      extractCode = url.searchParams.get('pwd') || '0000';
+    } catch (e) {
+      extractCode = '0000';
+    }
 
     // 隐藏下载信息
     downloadInfo.style.display = 'none';
