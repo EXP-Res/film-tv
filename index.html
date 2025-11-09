@@ -24,7 +24,7 @@
 
 
     <hr/>
-    <h4 style="color:#ffff00; background-color:#000000; text-align: center;">世界奇妙物语系列</h4>
+    <h4 id="section-world-story" style="color:#ffff00; background-color:#000000; text-align: center;">世界奇妙物语系列</h4>
     <hr/>
 
     <div class="container">
@@ -3068,7 +3068,7 @@
     <br/>
 
     <hr/>
-    <h4 style="color:#ffff00; background-color:#000000; text-align: center;">藤原龙也系列</h4>
+    <h4 id="section-fujiwara" style="color:#ffff00; background-color:#000000; text-align: center;">藤原龙也系列</h4>
     <hr/>
 
     <div class="container">
@@ -4439,7 +4439,7 @@
     <br/>
 
     <hr/>
-    <h4 style="color:#ffff00; background-color:#000000; text-align: center;">憨豆先生系列</h4>
+    <h4 id="section-mrbean" style="color:#ffff00; background-color:#000000; text-align: center;">憨豆先生系列</h4>
     <hr/>
 
     <div class="container">
@@ -4655,7 +4655,7 @@
     <br/>
 
     <hr/>
-    <h4 style="color:#ffff00; background-color:#000000; text-align: center;">其他系列</h4>
+    <h4 id="section-others" style="color:#ffff00; background-color:#000000; text-align: center;">其他系列</h4>
     <hr/>
 
     <br/>
@@ -4715,7 +4715,57 @@
       </div>
     </div>
 
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+
+    <!-- 快速导航 -->
+    <div id="quickNav" class="quick-nav">
+        <div class="quick-nav-title">影片导航</div>
+        <div id="navLinks" class="nav-links"></div>
+    </div>
+
     <script src="./docs/js/main.js"></script>
+    <script>
+        // 自动生成导航链接
+        function generateNavigation() {
+            const sections = document.querySelectorAll('h4[id^="section-"]');
+            const navLinks = document.getElementById('navLinks');
+            
+            sections.forEach(section => {
+                const link = document.createElement('a');
+                link.href = '#' + section.id;
+                link.className = 'nav-link-item';
+                link.textContent = section.textContent.replace('系列', '');
+                link.onclick = function(e) {
+                    e.preventDefault();
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
+                navLinks.appendChild(link);
+            });
+        }
+
+        // 回到顶部功能
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 显示/隐藏回到顶部按钮
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        // 页面加载时生成导航
+        document.addEventListener('DOMContentLoaded', generateNavigation);
+    </script>
 
 </body>
 </html>
