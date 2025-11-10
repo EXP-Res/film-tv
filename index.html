@@ -8,6 +8,8 @@
     <script src="./docs/js/bootstrap.bundle.min.js"></script>
     <link href="./docs/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./docs/css/style.css">
+    <script src="./docs/js/navigation.js"></script>
+    <script src="./docs/js/main.js"></script>
 </head>
 <body>
     <div class="container my-3 sticky-top">
@@ -4207,8 +4209,8 @@
                     <li class="list-group-item list-group-item-info">字幕：中文</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
-                        data-bs-download="https://pan.baidu.com/s/1DDmFBieRFPsVomDRy9QrLA?pwd=xxx" 
-                        data-uuid="xxx">[百度网盘]</button>(暂无片源)
+                        data-bs-download="https://pan.baidu.com/s/1ID-UxfyfslKUi_TqWUXkfA?pwd=tud8" 
+                        data-uuid="o9HK4ZUH">[百度网盘]</button>
                     </li>
                     <li class="list-group-item list-group-item-warning">
                       <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
@@ -4246,8 +4248,8 @@
                     <li class="list-group-item list-group-item-info">字幕：中文</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
-                        data-bs-download="https://pan.baidu.com/s/1-Wk19k2V1gkSIzhOd3CjWA?pwd=xxx" 
-                        data-uuid="xxx">[百度网盘]</button>(暂无片源)
+                        data-bs-download="https://pan.baidu.com/s/1oWGwmwsU6urK4faIUaEmIw?pwd=vnmg" 
+                        data-uuid="fizJcU7R">[百度网盘]</button>
                     </li>
                     <li class="list-group-item list-group-item-warning">
                       <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
@@ -4279,8 +4281,8 @@
                     <li class="list-group-item list-group-item-info">字幕：中文</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
-                        data-bs-download="https://pan.baidu.com/s/1eJTbYZ9cB9iRAUWHqDnFMw?pwd=xxx" 
-                        data-uuid="xxx">[百度网盘]</button>(暂无片源)
+                        data-bs-download="https://pan.baidu.com/s/1IQUJXz-kTM7zAHiAt3bH6w?pwd=mf6j" 
+                        data-uuid="jPP76rrk">[百度网盘]</button>
                     </li>
                     <li class="list-group-item list-group-item-warning">
                       <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
@@ -4312,8 +4314,8 @@
                     <li class="list-group-item list-group-item-info">字幕：中文</li>
                     <li class="list-group-item list-group-item-danger">下载：
                       <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
-                        data-bs-download="https://pan.baidu.com/s/1uXhE0IaT5L5mGjLSUCqVBA?pwd=xxx" 
-                        data-uuid="xxx">[百度网盘]</button>(暂无片源)
+                        data-bs-download="https://pan.baidu.com/s/15OvRJvJU8obwWSs7GjzYBQ?pwd=xxiq" 
+                        data-uuid="NXhiZx39">[百度网盘]</button>
                     </li>
                     <li class="list-group-item list-group-item-warning">
                       <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
@@ -4660,6 +4662,19 @@
 
     <br/>
 
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+
+    <!-- 快速导航 -->
+    <div id="quickNav" class="quick-nav">
+        <div class="quick-nav-title">影片导航</div>
+        <div id="navLinks" class="nav-links"></div>
+    </div>
+    
     <!-- 支付模态框 -->
     <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -4714,22 +4729,6 @@
           </div>
       </div>
     </div>
-
-    <!-- 回到顶部按钮 -->
-    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
-        </svg>
-    </button>
-
-    <!-- 快速导航 -->
-    <div id="quickNav" class="quick-nav">
-        <div class="quick-nav-title">影片导航</div>
-        <div id="navLinks" class="nav-links"></div>
-    </div>
-
-    <script src="./docs/js/main.js"></script>
-    <script src="./docs/js/navigation.js"></script>
 
 </body>
 </html>
