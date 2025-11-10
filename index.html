@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Film & TV</title>
     <link rel="icon" href="./docs/favicon.png" type="image/jpg">
-    <script src="./docs/js/bootstrap.bundle.min.js"></script>
     <link href="./docs/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./docs/css/style.css">
-    <script src="./docs/js/protection.js"></script>
-    <script src="./docs/js/navigation.js"></script>
-    <script src="./docs/js/main.js"></script>
 </head>
 <body>
     <div class="container my-3 sticky-top">
@@ -4657,6 +4653,12 @@
           </div>
       </div>
     </div>
+
+    <!-- 将所有脚本移到页面底部，使用 defer 加载以提升性能 -->
+    <script src="./docs/js/bootstrap.bundle.min.js" defer></script>
+    <script src="./docs/js/main.js" defer></script>
+    <script src="./docs/js/navigation.js" defer></script>
+    <script src="./docs/js/protection.js" defer></script>
 
 </body>
 </html>
