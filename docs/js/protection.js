@@ -60,8 +60,8 @@
             
             if ((widthThreshold || heightThreshold) && !devtoolsOpen) {
                 devtoolsOpen = true;
-                // 清空页面内容并显示警告
-                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:24px;color:red;background:#000;flex-direction:column;"><div>⚠️ 检测到开发者工具</div><div style="font-size:18px;margin-top:20px;">页面已被禁用，请关闭开发者工具后刷新页面</div></div>';
+                // 清空页面内容并显示警告，保留原背景色
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:24px;flex-direction:column;"><div style="background:rgba(255,255,255,0.95);padding:40px 60px;border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,0.3);text-align:center;"><div style="font-size:48px;margin-bottom:20px;">⚠️</div><div style="color:#dc3545;font-weight:bold;margin-bottom:15px;">检测到开发者工具</div><div style="font-size:18px;color:#666;">页面已被禁用，请关闭开发者工具后刷新页面</div></div></div>';
             }
         };
         
@@ -82,7 +82,7 @@
                 debuggerCheckCount++;
                 // 连续检测到2次才执行操作，避免误判
                 if (debuggerCheckCount >= 2) {
-                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:24px;color:red;background:#000;flex-direction:column;"><div>⚠️ 检测到调试器</div><div style="font-size:18px;margin-top:20px;">页面已被禁用</div></div>';
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:24px;flex-direction:column;"><div style="background:rgba(255,255,255,0.95);padding:40px 60px;border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,0.3);text-align:center;"><div style="font-size:48px;margin-bottom:20px;">⚠️</div><div style="color:#dc3545;font-weight:bold;margin-bottom:15px;">检测到调试器</div><div style="font-size:18px;color:#666;">页面已被禁用</div></div></div>';
                 }
             } else {
                 debuggerCheckCount = 0; // 重置计数
