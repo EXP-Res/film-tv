@@ -1,0 +1,42 @@
+# robots.txt for Classic Film & TV
+# 这个文件告诉搜索引擎爬虫哪些内容可以索引
+
+User-agent: *
+# 允许所有爬虫访问所有内容
+Allow: /
+
+# 不索引以下目录和文件
+Disallow: /docs/js/protection.min.js
+Disallow: /docs/js/protection.js
+
+# 网站地图位置（请将 yourdomain.com 替换为实际域名）
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# 常见搜索引擎爬虫的特殊规则
+
+# Google 爬虫
+User-agent: Googlebot
+Allow: /
+
+# Bing 爬虫
+User-agent: Bingbot
+Allow: /
+
+# 百度爬虫
+User-agent: Baiduspider
+Allow: /
+
+# 360 搜索爬虫
+User-agent: 360Spider
+Allow: /
+
+# 搜狗爬虫
+User-agent: Sogou web spider
+Allow: /
+
+# Yandex 爬虫
+User-agent: YandexBot
+Allow: /
+
+# 抓取延迟（可选，单位：秒）
+# Crawl-delay: 1
