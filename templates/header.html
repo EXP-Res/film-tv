@@ -78,15 +78,23 @@
 
     <!-- 页面头部 -->
     <div class="container my-3">
-      <div class="header-container sticky-top bg-white py-2">
-          <div class="d-flex justify-content-between align-items-center">
+      <div class="header-container sticky-top">
+          <div class="d-flex justify-content-between align-items-center mb-2">
               <a href="{{HOME_LINK}}" class="text-decoration-none">
-                  <img src="{{BASE_PATH}}docs/movies.png" alt="logo" style="height: 80px;">
+                  <h1 class="header-title mb-0">
+                      <img src="{{BASE_PATH}}docs/movies.png" alt="logo" style="height: 120px;">
+                  </h1>
               </a>
-              <div class="d-flex align-items-center gap-3">
+              <div class="d-flex align-items-center gap-2">
                   <!-- 搜索框 -->
-                  <div class="search-container">
+                  <div class="search-container d-flex gap-2">
                       <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                      <button type="button" id="searchButton" class="btn btn-primary" style="white-space: nowrap;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                          </svg>
+                          搜索
+                      </button>
                   </div>
                   <!-- 返回主页按钮 -->
                   <a href="{{HOME_LINK}}" class="btn btn-outline-primary" style="white-space: nowrap;">
@@ -97,11 +105,9 @@
                   </a>
               </div>
           </div>
-          <div class="mt-2 text-center">
-              <small class="text-muted">
-                  本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 | 如遇解压密码错误，可加 QQ 群 209442520 处理
-              </small>
-          </div>
+          <span class="header-explanation">
+              本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 <br/> 如遇解压密码错误，可加 QQ 群 209442520 处理
+          </span>
       </div>
     </div>
 

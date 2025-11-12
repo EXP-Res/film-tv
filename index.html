@@ -76,8 +76,14 @@
                   <img src="./docs/movies.png" alt="logo" style="height: 120px;">
               </h1>
               <!-- 搜索框 -->
-              <div class="search-container">
+              <div class="search-container d-flex gap-2">
                   <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                  <button type="button" id="searchButton" class="btn btn-primary" style="white-space: nowrap;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                      </svg>
+                      搜索
+                  </button>
               </div>
           </div>
           <span class="header-explanation">
@@ -88,7 +94,9 @@
       <hr/>
 
       <div class="container my-5">
-          <h2 style="color:#ffff00; background-color:#000000; text-align: center; padding: 15px;">影视导航</h2>
+          <h2 style="text-align: center; padding: 15px; margin-bottom: 20px; font-weight: bold; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+              📺 影视系列导航 📺
+          </h2>
           
           <div class="row mt-4">
               <!-- Section 01: 世界奇妙物语系列 -->

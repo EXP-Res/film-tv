@@ -242,3 +242,35 @@ function escapeRegex(text) {
 
 // 导出函数供外部使用
 window.performSearch = performSearch;
+
+// ==================== 搜索功能初始化 ====================
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('globalSearch');
+  const searchButton = document.getElementById('searchButton');
+  
+  if (!searchInput) {
+    console.warn('搜索输入框未找到');
+    return;
+  }
+
+  // 点击搜索按钮触发搜索
+  if (searchButton) {
+    searchButton.addEventListener('click', function() {
+      const query = searchInput.value.trim();
+      if (query) {
+        performSearch(query);
+      }
+    });
+  }
+
+  // 回车键触发搜索
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      if (query) {
+        performSearch(query);
+      }
+    }
+  });
+});
