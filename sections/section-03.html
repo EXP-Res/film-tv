@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础标题（会被 SEO 脚本覆盖） -->
+    <title>憨豆先生系列 - 经典影视作品</title>
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="../docs/favicon.png" type="image/png">
+    
+    <!-- 样式表 -->
+    <link href="../docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../docs/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap 框架脚本 -->
+    <script src="../docs/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SEO 优化脚本 -->
+    <script src="../docs/js/seo-meta.js"></script>
+</head>
+<body>
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="../imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="../imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="../imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 页面头部 -->
+    <div class="container my-3">
+      <div class="header-container sticky-top bg-white py-2">
+          <div class="d-flex justify-content-between align-items-center">
+              <a href="../index.html" class="text-decoration-none">
+                  <img src="../docs/movies.png" alt="logo" style="height: 80px;">
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                  <!-- 搜索框 -->
+                  <div class="search-container">
+                      <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                  </div>
+                  <!-- 返回主页按钮 -->
+                  <a href="../index.html" class="btn btn-outline-primary" style="white-space: nowrap;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                      </svg>
+                      返回主页
+                  </a>
+              </div>
+          </div>
+          <div class="mt-2 text-center">
+              <small class="text-muted">
+                  本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 | 如遇解压密码错误，可加 QQ 群 209442520 处理
+              </small>
+          </div>
+      </div>
+    </div>
+
+    <hr/>
+    <h4 id="section-03" style="color:#ffff00; background-color:#000000; text-align: center;">憨豆先生系列</h4>
+    <hr/>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/憨豆先生短片/title.webp" target="_blank">
+                  <img src="../res/tv/憨豆先生短片/title.webp" class="card-img" alt="憨豆先生 Mr. Bean 短片合辑">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">憨豆先生 Mr. Bean</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">罗温·艾金森主演的经典喜剧短片合辑。憨豆先生是个笨拙而幼稚的成年人，总是用非常规的方式处理日常生活中的简单任务，常常引发一连串意想不到的混乱和笑料。无需语言，纯粹的肢体喜剧艺术</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1jxiDRWcFt3SEW5WfMzD2AQ?pwd=hm4k" 
+                        data-uuid="7VsGAHqU">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：1990-01-01</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/憨豆先生系列/title1.webp" target="_blank">
+                  <img src="../res/film/憨豆先生系列/title1.webp" class="card-img" alt="憨豆先生的大灾难">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">憨豆先生的大灾难</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">罗温·艾金森主演。憨豆在美术馆当保安，却被误派往美国护送名画《惠斯勒的母亲》。笨手笨脚的憨豆制造了一连串灾难性事故，甚至毁坏了价值连城的名画，引发了一场令人捧腹的跨国闹剧</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1jk-p979uzjFCtBG3m5ZPJg?pwd=ddfi" 
+                        data-uuid="AzNEi9BK">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：1997-07-03</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/憨豆先生系列/title2.webp" target="_blank">
+                  <img src="../res/film/憨豆先生系列/title2.webp" class="card-img" alt="憨豆先生的假期 / 憨豆先生的黄金周">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">憨豆先生的假期</h4><h6><i>（憨豆先生的黄金周）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">憨豆抽中了去法国戛纳海滩度假的大奖，于是开着他的迷你车踏上了前往法国的旅程。一路上憨豆制造了无数混乱和笑料，展开了一段疯狂的法国之旅</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1B4M3m_SoTKRN99lf8YBzoA?pwd=xuaw" 
+                        data-uuid="Bgka3KUu">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2007-03-22</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/憨豆先生系列/title3.webp" target="_blank">
+                  <img src="../res/film/憨豆先生系列/title3.webp" class="card-img" alt="憨豆特工 1">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">憨豆特工 1</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">罗温·艾金森饰演特工强尼·英格利什（Johnny English）。英国王冠珠宝失窃，所有精英特工都遇害，只能启用档案室的强尼。这位自信满满但笨手笨脚的特工用他独特的方式调查案件，展开了一场充满笑料的间谍冒险</li>
+                    <li class="list-group-item list-group-item-success">语言：英语，粤语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1gqYUCq5tzL6zs0i6a4OIZQ?pwd=4bj8" 
+                        data-uuid="9g7fVH6e">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2003-04-11</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/憨豆先生系列/title4.webp" target="_blank">
+                  <img src="../res/film/憨豆先生系列/title4.webp" class="card-img" alt="憨豆特工 2">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">憨豆特工 2</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">强尼·英格利什退休后在寺庙修行，但被召回执行任务。中国总理遇袭，凶手使用的武器来自英国军火公司。强尼必须找出幕后黑手，阻止更大的阴谋。这次冒险让他从伦敦到香港，继续展现他的"特工风范"</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1upRg0lwpK2Azw-LvxImlBQ?pwd=4uan" 
+                        data-uuid="D2ZkFAfH">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2011-10-21</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/憨豆先生系列/title5.webp" target="_blank">
+                  <img src="../res/film/憨豆先生系列/title5.webp" class="card-img" alt="憨豆特工 3">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">憨豆特工 3</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">强尼·英格利思再度回归！这次，全世界遭遇神秘网络攻击，所有在世的特工身份都被曝光，只有已"死亡"的强尼还安全。他必须找出幕后黑手，阻止这场全球危机。搭档年轻特工，展开了一场充满笑料的反击行动</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1NlAZ2i9pfLcMHCj1OXib6g?pwd=3dze" 
+                        data-uuid="uwNVgsH2">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2018-10-12</small>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <br/>
+
+
+    <hr/>
+
+    <br/>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+    
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">搜索结果</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="searchResults">
+                  <div class="text-center text-muted">
+                      <p>正在搜索...</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!-- ==================== 脚本加载区 ==================== -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="../docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 -->
+    <script src="../docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 全局搜索功能 -->
+    <script src="../docs/js/search.js"></script>
+    
+    <!-- 4. 页面保护脚本 -->
+    <script src="../docs/js/protection.min.js" defer></script>
+
+</body>
+</html>

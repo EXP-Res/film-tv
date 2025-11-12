@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础标题（会被 SEO 脚本覆盖） -->
+    <title>死神来了系列 - 经典影视作品</title>
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="../docs/favicon.png" type="image/png">
+    
+    <!-- 样式表 -->
+    <link href="../docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../docs/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap 框架脚本 -->
+    <script src="../docs/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SEO 优化脚本 -->
+    <script src="../docs/js/seo-meta.js"></script>
+</head>
+<body>
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="../imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="../imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="../imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 页面头部 -->
+    <div class="container my-3">
+      <div class="header-container sticky-top bg-white py-2">
+          <div class="d-flex justify-content-between align-items-center">
+              <a href="../index.html" class="text-decoration-none">
+                  <img src="../docs/movies.png" alt="logo" style="height: 80px;">
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                  <!-- 搜索框 -->
+                  <div class="search-container">
+                      <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                  </div>
+                  <!-- 返回主页按钮 -->
+                  <a href="../index.html" class="btn btn-outline-primary" style="white-space: nowrap;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                      </svg>
+                      返回主页
+                  </a>
+              </div>
+          </div>
+          <div class="mt-2 text-center">
+              <small class="text-muted">
+                  本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 | 如遇解压密码错误，可加 QQ 群 209442520 处理
+              </small>
+          </div>
+      </div>
+    </div>
+
+    <hr/>
+    <h4 id="section-06" style="color:#ffff00; background-color:#000000; text-align: center;">死神来了系列</h4>
+    <hr/>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/死神来了系列/title1.webp" target="_blank">
+                  <img src="../res/film/死神来了系列/title1.webp" class="card-img" alt="死神来了1">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死神来了 1</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">高中生艾利克斯预见到飞机爆炸，带领几名同学逃过一劫。然而死神不会放过本该死去的人，幸存者接连以离奇方式死亡。他们必须找出死神的规律，才能打破死亡顺序逃出生天</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="TODO" 
+                        data-uuid="fD1xM8Np">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2000-03-17</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/死神来了系列/title2.webp" target="_blank">
+                  <img src="../res/film/死神来了系列/title2.webp" class="card-img" alt="死神来了2">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死神来了 2</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">金伯莉预见高速公路发生惨烈车祸，救下一群幸存者。死神再次降临，通过各种意外手段收割生命。幸存者们研究前作事件，试图通过"新生"打破死亡循环，但死神的设计无处不在</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="TODO" 
+                        data-uuid="fD2yK5Vr">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2003-01-31</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/死神来了系列/title3.webp" target="_blank">
+                  <img src="../res/film/死神来了系列/title3.webp" class="card-img" alt="死神来了3">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死神来了 3</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">温蒂预见游乐园过山车事故，带几名同学逃离。死神如影随形，幸存者在恐怖的死亡倒计时中挣扎。温蒂通过相机照片寻找线索，却发现每个人的死法都暗藏在照片细节中，死亡陷阱无法避免</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="TODO" 
+                        data-uuid="fD3zL7Qw">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2006-02-10</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/死神来了系列/title4.webp" target="_blank">
+                  <img src="../res/film/死神来了系列/title4.webp" class="card-img" alt="死神来了4">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死神来了 4</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">尼克预见赛车场惨烈事故逃出生天。死神的杀戮手法更加残忍血腥，3D效果展现极致恐怖画面。幸存者试图通过杀死他人来续命，却发现这只会让死神的计划更加完美，无人能逃脱死亡清单</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="TODO" 
+                        data-uuid="fD4aR9Tx">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2009-08-28</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/死神来了系列/title5.webp" target="_blank">
+                  <img src="../res/film/死神来了系列/title5.webp" class="card-img" alt="死神来了5">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死神来了 5</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">萨姆预见吊桥坍塌，救下同事们。他们发现杀死其他人可以获得对方剩余寿命，但这只是死神的陷阱。影片结局神反转，揭示本作实为系列前传，与第一部形成完美闭环，死神从未失手</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="TODO" 
+                        data-uuid="fD5bH6Ps">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2011-08-12</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/死神来了系列/title6.webp" target="_blank">
+                  <img src="../res/film/死神来了系列/title6.webp" class="card-img" alt="死神来了6 血脉诅咒">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死神来了 6 血脉诅咒</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">大学生斯蒂芬妮长期被噩梦困扰，返回家乡寻找噩梦起源，却意外发现曾发生在外婆艾莉丝身上的离奇旧事，并牵连出流淌在整个家族血脉中的秘密：死神诅咒。随着身边亲人一个个离奇惨死，斯蒂芬妮还能带领幸存者逃脱死神的宿命猎杀吗？</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="TODO" 
+                        data-uuid="fD6cW4Mn">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2025-08-22</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <br/>
+
+    <hr/>
+
+    <br/>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+    
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">搜索结果</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="searchResults">
+                  <div class="text-center text-muted">
+                      <p>正在搜索...</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!-- ==================== 脚本加载区 ==================== -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="../docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 -->
+    <script src="../docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 全局搜索功能 -->
+    <script src="../docs/js/search.js"></script>
+    
+    <!-- 4. 页面保护脚本 -->
+    <script src="../docs/js/protection.min.js" defer></script>
+
+</body>
+</html>

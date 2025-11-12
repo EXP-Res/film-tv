@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础标题（会被 SEO 脚本覆盖） -->
+    <title>生化危机系列 - 经典影视作品</title>
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="../docs/favicon.png" type="image/png">
+    
+    <!-- 样式表 -->
+    <link href="../docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../docs/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap 框架脚本 -->
+    <script src="../docs/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SEO 优化脚本 -->
+    <script src="../docs/js/seo-meta.js"></script>
+</head>
+<body>
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="../imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="../imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="../imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 页面头部 -->
+    <div class="container my-3">
+      <div class="header-container sticky-top bg-white py-2">
+          <div class="d-flex justify-content-between align-items-center">
+              <a href="../index.html" class="text-decoration-none">
+                  <img src="../docs/movies.png" alt="logo" style="height: 80px;">
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                  <!-- 搜索框 -->
+                  <div class="search-container">
+                      <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                  </div>
+                  <!-- 返回主页按钮 -->
+                  <a href="../index.html" class="btn btn-outline-primary" style="white-space: nowrap;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                      </svg>
+                      返回主页
+                  </a>
+              </div>
+          </div>
+          <div class="mt-2 text-center">
+              <small class="text-muted">
+                  本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 | 如遇解压密码错误，可加 QQ 群 209442520 处理
+              </small>
+          </div>
+      </div>
+    </div>
+
+    <hr/>
+    <h4 id="section-04" style="color:#ffff00; background-color:#000000; text-align: center;">生化危机系列</h4>
+    <hr/>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/真人版/title1.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/真人版/title1.webp" class="card-img" alt="生化危机1 变种生还">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机1 变种生还</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">保护伞公司地下研究所发生病毒泄漏，特种部队被派去调查。爱丽丝失忆醒来，与小队一起面对失控的人工智能和丧尸群。米拉·乔沃维奇主演，开启了真人版生化危机系列传奇</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1dSL1f_IxRJDx_mbZrFax9A?pwd=avqd" 
+                        data-uuid="fW4qD6Km">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2002-03-15</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/真人版/title2.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/真人版/title2.webp" class="card-img" alt="生化危机2 启示录">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机2 启示录</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">T病毒在浣熊市爆发，全城沦为丧尸地狱。爱丽丝觉醒超能力，与吉尔、卡洛斯联手逃离被封锁的城市。追踪者、舔食者等怪物袭来，保护伞公司的阴谋逐渐浮出水面</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1ofiLY7Lehu5mSynPbw5EFA?pwd=1b6n" 
+                        data-uuid="nR8vT2Px">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2004-09-10</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/真人版/title3.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/真人版/title3.webp" class="card-img" alt="生化危机3 灭绝">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机3 灭绝</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">病毒席卷全球，世界变成荒漠废土。爱丽丝独自在沙漠中流浪，能力不断进化。她加入幸存者车队，前往阿拉斯加避难所。保护伞的克隆实验和威斯克的阴谋威胁着人类最后的希望</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1GgsYEML3SEmvNUZZc-Tu2A?pwd=kt5n" 
+                        data-uuid="hZ3cJ7Ls">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2007-09-21</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/真人版/title4.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/真人版/title4.webp" class="card-img" alt="生化危机4 来生">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机4 来生</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">爱丽丝失去超能力后潜入东京保护伞总部，遇到里昂、克莱尔等游戏角色。在洛杉矶监狱，幸存者们对抗执行者等强敌。威斯克揭晓终极计划，人类面临最后决战</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/15GfVBY9C3AKHjEdECQQFZg?pwd=7495" 
+                        data-uuid="bM9sX4Qw">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2010-09-10</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/真人版/title5.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/真人版/title5.webp" class="card-img" alt="生化危机5 惩罚">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机5 惩罚</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">爱丽丝被囚禁在海底研究所，里昂率队前来营救。在东京、纽约、莫斯科等城市模拟场景中，对抗各种变异生物。艾达·王现身，红皇后的阴谋露出冰山一角</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1GqiP_CdNaBY23Im46ZtXOQ?pwd=7ipt" 
+                        data-uuid="yA6gE1Nt">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2012-09-14</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/真人版/title6.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/真人版/title6.webp" class="card-img" alt="生化危机6 终章">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机6 终章</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">爱丽丝回到浣熊市地下蜂巢，寻找终结病毒的解药。红皇后揭露保护伞真相，艾萨克斯博士的疯狂计划即将启动。48小时倒计时，人类存亡之战，系列终章震撼完结</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1_oFTuZriaVW7EFGXBohJAQ?pwd=f1gt" 
+                        data-uuid="uC5kV9Fb">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2016-12-23</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/CG版/title1.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/CG版/title1.webp" class="card-img" alt="生化危机CG1 恶化">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机CG1 恶化</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">浣熊市事件七年后，里昂受命前往机场调查恐怖分子威胁。恐怖分子释放T病毒，里昂与克莱尔必须在混乱中阻止病毒扩散，揭开幕后阴谋。首部生化危机CG电影，展现病毒爆发的恐怖场景</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/197tLlqdtsWO63OIawTtrRA?pwd=ww8d" 
+                        data-uuid="xK7mN9Rq">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2008-10-18</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/CG版/title2.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/CG版/title2.webp" class="card-img" alt="生化危机CG2 诅咒">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机CG2 诅咒</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">里昂受命前往东欧某国调查生化武器交易。在内战中，他发现拉斯普拉加寄生虫被用作武器。与反政府军成员合作，里昂必须阻止新型生化武器扩散，面对比病毒更可怕的寄生虫威胁</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1URowesauxU_Uow_kGIyANA?pwd=t4b9" 
+                        data-uuid="pL2wB8Vj">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2012-05-27</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/CG版/title3.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/CG版/title3.webp" class="card-img" alt="生化危机CG3 复仇">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机CG3 复仇</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">克里斯追查军火商至纽约，发现新型生化武器将在城市中释放。他必须与里昂、丽贝卡联手，在24小时内阻止病毒扩散。面对最强生化兵器，BSAA成员展开生死营救，揭开安布雷拉的最终阴谋</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1iOhXjw1_LmHm5R6wWTUdkA?pwd=hc8y" 
+                        data-uuid="tG5nH3Yc">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2017-05-27</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/生化危机系列/CG版/title4.webp" target="_blank">
+                  <img src="../res/film/生化危机系列/CG版/title4.webp" class="card-img" alt="生化危机CG4 死亡岛">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">生化危机CG4 死亡岛</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">旧金山湾阿尔卡特拉斯监狱发生丧尸暴动，里昂与特工团队前往调查。克莱尔发现囚犯被用作生化实验品，新型病毒比以往更致命。在与迪伦的对抗中，揭露了BSAA内部的黑暗秘密</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1HrDtSPpMkB1-xPC8xEbE5g?pwd=thff" 
+                        data-uuid="vJ2hR8Zn">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2023-07-25</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <br/>
+
+
+    <hr/>
+
+    <br/>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+    
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">搜索结果</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="searchResults">
+                  <div class="text-center text-muted">
+                      <p>正在搜索...</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!-- ==================== 脚本加载区 ==================== -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="../docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 -->
+    <script src="../docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 全局搜索功能 -->
+    <script src="../docs/js/search.js"></script>
+    
+    <!-- 4. 页面保护脚本 -->
+    <script src="../docs/js/protection.min.js" defer></script>
+
+</body>
+</html>

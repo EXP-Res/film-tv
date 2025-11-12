@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础标题（会被 SEO 脚本覆盖） -->
+    <title>哈利波特系列 - 经典影视作品</title>
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="../docs/favicon.png" type="image/png">
+    
+    <!-- 样式表 -->
+    <link href="../docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../docs/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap 框架脚本 -->
+    <script src="../docs/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SEO 优化脚本 -->
+    <script src="../docs/js/seo-meta.js"></script>
+</head>
+<body>
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="../imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="../imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="../imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 页面头部 -->
+    <div class="container my-3">
+      <div class="header-container sticky-top bg-white py-2">
+          <div class="d-flex justify-content-between align-items-center">
+              <a href="../index.html" class="text-decoration-none">
+                  <img src="../docs/movies.png" alt="logo" style="height: 80px;">
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                  <!-- 搜索框 -->
+                  <div class="search-container">
+                      <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                  </div>
+                  <!-- 返回主页按钮 -->
+                  <a href="../index.html" class="btn btn-outline-primary" style="white-space: nowrap;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                      </svg>
+                      返回主页
+                  </a>
+              </div>
+          </div>
+          <div class="mt-2 text-center">
+              <small class="text-muted">
+                  本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 | 如遇解压密码错误，可加 QQ 群 209442520 处理
+              </small>
+          </div>
+      </div>
+    </div>
+
+    <hr/>
+    <h4 id="section-05" style="color:#ffff00; background-color:#000000; text-align: center;">哈利波特系列</h4>
+    <hr/>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title1.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title1.webp" class="card-img" alt="哈利波特与魔法石">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 1</h4><h6><i>（哈利波特与魔法石）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">11岁的哈利波特收到霍格沃茨魔法学校的入学通知，得知自己是巫师且父母被伏地魔杀害的真相。他在学校结识罗恩和赫敏，三人联手阻止伏地魔夺取魔法石，开启魔法冒险之旅</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1Q_UcqIgGh6v2QV1yvy5bgA?pwd=ynm4" 
+                        data-uuid="hP1mK9Zx">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2001-11-16</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title2.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title2.webp" class="card-img" alt="哈利波特与密室">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 2</h4><h6><i>（哈利波特与密室）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">霍格沃茨学生接连遭到石化，墙上出现"密室已被打开"的血字。哈利听到神秘的声音，发现自己能说蛇佬腔。他与罗恩、赫敏深入密室，与伏地魔的记忆对抗，拯救金妮并消灭蛇怪</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1L4F00o_IoW-y3JFwWYXqSQ?pwd=svdk" 
+                        data-uuid="hP2nR7Qv">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2002-11-15</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title3.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title3.webp" class="card-img" alt="哈利波特与阿兹卡班的囚徒">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 3</h4><h6><i>（哈利波特与阿兹卡班的囚徒）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">臭名昭著的囚犯小天狼星布莱克越狱，据说他是哈利父母的背叛者。哈利在新任黑魔法防御课教授卢平的帮助下，学习守护神咒。最终发现小天狼星是教父，真正的叛徒另有其人</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1G4LS7HHbjbFSVytBGXfbRQ?pwd=q7t2" 
+                        data-uuid="hP3sT4Bw">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2004-06-04</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title4.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title4.webp" class="card-img" alt="哈利波特与火焰杯">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 4</h4><h6><i>（哈利波特与火焰杯）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">霍格沃茨举办危险的三强争霸赛，哈利被神秘选中成为第四位勇士。他在三个致命任务中奋力拼搏，最终发现这是伏地魔的阴谋。在墓地的对决中，伏地魔成功复活，黑暗势力卷土重来</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1p8hw3qiN3SyxgvzKjN_bTw?pwd=ju3r" 
+                        data-uuid="hP4vL6Nx">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2005-11-18</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title5.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title5.webp" class="card-img" alt="哈利波特与凤凰社">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 5</h4><h6><i>（哈利波特与凤凰社）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">魔法部拒绝承认伏地魔归来，派遣乌姆里奇监控霍格沃茨。哈利秘密组建"邓布利多军"教授防御魔法。他受伏地魔幻象误导赶往魔法部，导致教父小天狼星牺牲。预言揭示哈利与伏地魔的宿命对决</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1k8HWS4daD9IbPOC2822V4w?pwd=19ry" 
+                        data-uuid="hP5wG8Mc">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2007-07-11</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title6.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title6.webp" class="card-img" alt="哈利波特与混血王子">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 6</h4><h6><i>（哈利波特与混血王子）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">邓布利多带哈利探索伏地魔的过去，寻找魂器的秘密。哈利从混血王子的旧课本中学到强大魔法。德拉科接受任务要杀死邓布利多，斯内普最终完成了这一使命。邓布利多之死标志着黑暗时代全面降临</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/16RdFsm4LZrkdF_YgKzUmcg?pwd=yryf" 
+                        data-uuid="hP6xJ2Yf">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2009-07-15</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title7.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title7.webp" class="card-img" alt="哈利波特与死亡圣器(上)">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 7 上篇</h4><h6><i>（哈利波特与死亡圣器-上）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">哈利、罗恩和赫敏放弃学业，踏上寻找和摧毁伏地魔魂器的危险旅程。他们在逃亡中发现死亡圣器的传说，魂器挂坠盒的黑暗力量考验着三人的友谊。多比为救哈利牺牲，伏地魔夺取接骨木魔杖</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1cybDO0hDbRhUxrlc_xedWw?pwd=cnxv" 
+                        data-uuid="hP7aD5Pk">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2010-11-19</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/哈利波特系列/title8.webp" target="_blank">
+                  <img src="../res/film/哈利波特系列/title8.webp" class="card-img" alt="哈利波特与死亡圣器(下)">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">哈利波特 7 下篇</h4><h6><i>（哈利波特与死亡圣器-下）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">最终决战在霍格沃茨打响，哈利与伙伴们摧毁剩余魂器。斯内普的记忆揭示他对哈利母亲的爱和多年卧底的真相。哈利得知自己是魂器，主动赴死。在国王十字车站的幻境中重生，最终击败伏地魔</li>
+                    <li class="list-group-item list-group-item-success">语言：英语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1yxraHCYjs6PndfGXzWLZdg?pwd=gfgd" 
+                        data-uuid="hP8bF3Hs">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2011-07-15</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <br/>
+
+    <hr/>
+
+    <br/>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+    
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">搜索结果</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="searchResults">
+                  <div class="text-center text-muted">
+                      <p>正在搜索...</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!-- ==================== 脚本加载区 ==================== -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="../docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 -->
+    <script src="../docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 全局搜索功能 -->
+    <script src="../docs/js/search.js"></script>
+    
+    <!-- 4. 页面保护脚本 -->
+    <script src="../docs/js/protection.min.js" defer></script>
+
+</body>
+</html>

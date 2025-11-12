@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础标题（会被 SEO 脚本覆盖） -->
+    <title>藤原龙也系列 - 经典影视作品</title>
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="../docs/favicon.png" type="image/png">
+    
+    <!-- 样式表 -->
+    <link href="../docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../docs/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap 框架脚本 -->
+    <script src="../docs/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SEO 优化脚本 -->
+    <script src="../docs/js/seo-meta.js"></script>
+</head>
+<body>
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="../imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="../imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="../imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 页面头部 -->
+    <div class="container my-3">
+      <div class="header-container sticky-top bg-white py-2">
+          <div class="d-flex justify-content-between align-items-center">
+              <a href="../index.html" class="text-decoration-none">
+                  <img src="../docs/movies.png" alt="logo" style="height: 80px;">
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                  <!-- 搜索框 -->
+                  <div class="search-container">
+                      <input type="text" id="globalSearch" class="form-control" placeholder="跨分页搜索..." style="width: 300px;">
+                  </div>
+                  <!-- 返回主页按钮 -->
+                  <a href="../index.html" class="btn btn-outline-primary" style="white-space: nowrap;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                      </svg>
+                      返回主页
+                  </a>
+              </div>
+          </div>
+          <div class="mt-2 text-center">
+              <small class="text-muted">
+                  本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压 | 如遇解压密码错误，可加 QQ 群 209442520 处理
+              </small>
+          </div>
+      </div>
+    </div>
+
+    <hr/>
+    <h4 id="section-02" style="color:#ffff00; background-color:#000000; text-align: center;">藤原龙也系列</h4>
+    <hr/>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/死亡笔记/title.jpg" target="_blank">
+                  <img src="../res/film/藤原龙也系列/死亡笔记/title.jpg" class="card-img" alt="死亡笔记 Death Note">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">死亡笔记 Death Note</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">改编自同名漫画，藤原龙也饰演天才高中生夜神月，意外获得死神留下的死亡笔记，只要在笔记上写下名字就能让对方死亡。他以此制裁罪犯，自称正义之神"基拉"，与天才侦探L展开智力对决</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1XbAW3W6SDXqLb5JeO3_Zeg?pwd=gkcs" 
+                        data-uuid="Cdy9swzj">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2006-06-17</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/大逃杀/title1.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/大逃杀/title1.webp" class="card-img" alt="大逃杀 Ⅰ - 东京圣战">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">大逃杀 Ⅰ 东京圣战</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">近未来日本陷入经济危机，失业率暴增，青少年犯罪激增。政府制定"BR法案"，每年随机抽选一个班级的学生到荒岛进行生存游戏，藤原龙也饰演七原秋也，与42名同学被迫互相残杀，只有最后一人能生还</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1xz3pxVESoPSRVhpG7faTwQ?pwd=fsbi" 
+                        data-uuid="mKf2ZCb2">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2000-12-16</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/大逃杀/title2.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/大逃杀/title2.webp" class="card-img" alt="大逃杀 Ⅱ - 镇魂歌">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">大逃杀 Ⅱ 镇魂歌</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第一部三年后，前作幸存者七原秋也成立反BR组织"Wild Seven"。新一批学生被送往荒岛执行特殊任务：消灭七原秋也。学生们必须在项圈爆炸前完成任务，否则全部死亡。藤原龙也饰演的七原秋也从猎物变成猎人</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1t-g6TWMlY2uF8jl0PJK4UQ?pwd=khcx" 
+                        data-uuid="fCf67AQh">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2003-07-05</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/赌博默示录/title1.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/赌博默示录/title1.webp" class="card-img" alt="赌博默示录1 人生逆转游戏">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">赌博默示录1 人生逆转</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">改编自福本伸行漫画，藤原龙也饰演废柴青年伊藤开司，因替朋友担保欠下巨额债务，被迫登上赌博游船"希望号"。在这里，债务者必须通过各种极限赌博游戏赢得筹码偿还债务，失败者将被卖到地下劳役所</li>
+                    <li class="list-group-item list-group-item-success">语言：日语，粤语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1Z0ccmtFOeXClqbtAsJJc2w?pwd=hpes" 
+                        data-uuid="V4Z9PKwu">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2009-10-10</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/赌博默示录/title2.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/赌博默示录/title2.webp" class="card-img" alt="赌博默示录2 人生夺回游戏">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">赌博默示录2 人生夺回</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">续集中，开司为了帮助工友，再次陷入赌博陷阱。他必须在帝爱集团设下的"沼"游戏中获胜才能脱身。面对更加残酷和复杂的赌局，开司用智慧和勇气挑战黑心财团，为底层人民讨回公道</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1iVjdCH6f5EGbK0Uc9xqQvg?pwd=hqjk" 
+                        data-uuid="f8VQWbsC">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2011-11-05</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/赌博默示录/title3.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/赌博默示录/title3.webp" class="card-img" alt="赌博默示录3 终极游戏">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">赌博默示录3 终极游戏</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">终章中，开司与帝爱集团会长兵藤和尊展开终极对决。通过"梦幻一夜城"的赌局，开司要用智慧击败这个操控无数人命运的邪恶资本家，为所有债务者争取自由。这是废柴逆袭、以小博大的巅峰之战</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1SKtZqQZqPuxKzf-puvKSbQ?pwd=f9j8" 
+                        data-uuid="3swL7te2">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2020-01-10</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/赌博默示录/title1.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/赌博默示录/title1.webp" class="card-img" alt="赌博默示录1 人生逆转游戏">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">赌博默示录1 粤语版</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">改编自福本伸行漫画，藤原龙也饰演废柴青年伊藤开司，因替朋友担保欠下巨额债务，被迫登上赌博游船"希望号"。在这里，债务者必须通过各种极限赌博游戏赢得筹码偿还债务，失败者将被卖到地下劳役所</li>
+                    <li class="list-group-item list-group-item-success">语言：粤语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1XzRnhydkUIDr8kdxeM3Kwg?pwd=pnkd" 
+                        data-uuid="Kz6tC4kf">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2009-10-10</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/七天死亡游戏/title.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/七天死亡游戏/title.webp" class="card-img" alt="算计：七天的死亡游戏">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">算计：七天的死亡游戏</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">改编自米泽穗信推理小说，藤原龙也饰演天才大学生，他和同学们被卷入一场精心策划的密室杀人游戏。在七天时间内，他们必须找出真凶，否则所有人都将面临死亡威胁。一场智力与人性的极限较量就此展开</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1jWoD1PHhFeUhEJ8AC_gxpA?pwd=24qa" 
+                        data-uuid="dr8VHePH">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/rmvb-Yes-orange.svg" data-bs-toggle="tooltip" title="RealMedia 格式，早期网络视频标准"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2011-11-05</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/只有我不在的街道/title.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/只有我不在的街道/title.webp" class="card-img" alt="只有我不在的街道">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">只有我不在的街道</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">改编自三部敬原著漫画，藤原龙也饰演拥有"再上映"超能力的青年藤沼悟。当母亲被杀后，他的意识被送回18年前的小学时代。他必须阻止当年发生的连续诱拐杀人案，拯救同学加代，并找出真正的凶手改变未来</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1-mwVpYhGMZuHfgIqXnFZHQ?pwd=3dpp" 
+                        data-uuid="ibwk8idY">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2016-03-19</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/全领域异常解决室/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/全领域异常解决室/title.webp" class="card-img" alt="全领域异常解决室 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">全领域异常解决室</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">藤原龙也饰演"全领域异常解决室"室长代理兴玉雅，专门解决连最先进科学搜查都无法解释的异常事件。第1集"神隐"案：人体突然消失；第2集：女子高中集体昏迷；第3集：物体从空中坠落的"时空裂缝"</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1dQGGJQhEMDA6TKkHyqRa2Q?pwd=muh7" 
+                        data-uuid="PxM7JVqj">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2024-10-09</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/全领域异常解决室/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/全领域异常解决室/snap2.webp" class="card-img" alt="全领域异常解决室 4~6 集游戏">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">全领域异常解决室</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第4集"縊鬼"：大手町商业街精英连续跳楼；第5集"千里眼"：连续爆炸预告引发首都恐慌，拥有千里眼能力的少女登场；第6集"犬神诅咒"：神与神的全面战争，所有谜团开始串联</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/168XMu41yqcytj9SGx7aUIg?pwd=qvha" 
+                        data-uuid="QGr4HMwt">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2024-10-30</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/全领域异常解决室/snap3.png" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/全领域异常解决室/snap3.png" class="card-img" alt="全领域异常解决室 7~9 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">全领域异常解决室</h4><h6><i>（7 ~ 9 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第7集"对众神宣战"：新神登场，犯人是神还是人类？第8集"恶灵上身"：人类之罪与神明失控，触犯禁忌；第9集"真正身份"：最重要的神面临生命危机，救世主是暴怒之神须佐之男</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1JGEObdCVcJJ-Bxw2b8jebQ?pwd=66ux" 
+                        data-uuid="UcFJTz69">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2024-11-20</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/全领域异常解决室/snap4.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/全领域异常解决室/snap4.webp" class="card-img" alt="全领域异常解决室 10 最终话">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">全领域异常解决室</h4><h6><i>（第 10 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">"蛭儿现身"：答案只有神知道——跨越悠久时光的羁绊。人类与众神面临最大危机，蛭儿事件的真相终于揭晓。兴玉雅与雨野小梦的神之身份，以及整个事件背后的真相将彻底揭开</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/10rgcyinWGejQOHMu_Tuf4Q?pwd=xfkv" 
+                        data-uuid="dJm9pPoz">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2024-12-18</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/ST警视厅科学特搜班/title.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/ST警视厅科学特搜班/title.webp" class="card-img" alt="ST 警视厅科学特搜班">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">ST 警视厅科学特搜班</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">ST 是 Scientific Task Force 的意思，即科学特搜班，此为 ST 系列首播的单发特别篇。藤原龙也饰演警视厅科学特搜班法医学专家赤城左门，性格古怪但推理能力超群。与队长百合根友久搭档，率领 ST 成员运用科学手段侦破案件</li>
+                    <li class="list-group-item list-group-item-success">语言：粤语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1HifbMhTH174yHCFwbp9-Zw?pwd=mdiq" 
+                        data-uuid="Jm7K9ihY">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2013-04-10 [<i>片源过旧，无日语原声</i>]</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/ST红与白的搜查档案/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/ST红与白的搜查档案/title.webp" class="card-img" alt="ST 红与白的搜查档案 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">ST 红与白的搜查档案</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">因特别篇收视率可观而催生的 ST 系列的连续剧。继续讲述赤城左门与百合根友久率领ST团队侦破案件的故事。第1集：模特儿连续杀人案；第2集：轻小说作家密室死亡；第3集：夜店连续放火事件</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1DDmFBieRFPsVomDRy9QrLA?pwd=capv" 
+                        data-uuid="t2PyzDD6">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2014-07-16</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/ST红与白的搜查档案/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/ST红与白的搜查档案/snap2.webp" class="card-img" alt="ST 红与白的搜查档案 4~6 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">ST 红与白的搜查档案</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第4集：邪教集团连续自杀案；第5集：闹鬼公寓灵异事件背后的科学真相；第6集：医院医疗事故引发的复仇计划。赤城的过去逐渐揭开</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1-Wk19k2V1gkSIzhOd3CjWA?pwd=rcz2" 
+                        data-uuid="vkwRgV3A">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2014-08-06</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/ST红与白的搜查档案/snap3.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/ST红与白的搜查档案/snap3.webp" class="card-img" alt="ST 红与白的搜查档案 7~9 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">ST 红与白的搜查档案</h4><h6><i>（7 ~ 9 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第7集：音乐学院密室杀人事件；第8集：犯罪心理学家与赤城的巅峰对决；第9集：连续杀人案"桃太郎"事件开始，ST陷入危机</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1eJTbYZ9cB9iRAUWHqDnFMw?pwd=pned" 
+                        data-uuid="todkYev6">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2014-08-27</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/ST红与白的搜查档案/snap4.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/ST红与白的搜查档案/snap4.webp" class="card-img" alt="ST 红与白的搜查档案 10 最终话">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">ST 红与白的搜查档案</h4><h6><i>（第 10 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">最终话："桃太郎"连续杀人事件迎来终局。幕后黑手的真实身份揭晓，ST成员团结一致破解最大难题。赤城与百合根的搭档关系得到升华，科学特搜班的未来之路就此展开</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1uXhE0IaT5L5mGjLSUCqVBA?pwd=r7pr" 
+                        data-uuid="AdpHP9kz">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2014-09-17</small>
+            </div>
+          </div>
+        </div>
+
+   
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/青之SP/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/青之SP/title.webp" class="card-img" alt="青之SP 学校内警察嶋田隆平 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">青之SP 学校内警察</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">藤原龙也饰演警察嶋田隆平，作为学校内警察（School Police）进驻赤岭中学，用冷酷严格的方式处理校园问题。第1集：校园欺凌引发的暴力事件；第2集：学生网络犯罪调查；第3集：教师与学生的冲突事件</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1eK13BGrQXGg6XTHxl1EXlA?pwd=brxj" 
+                        data-uuid="DupiYhA8">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2021-01-12</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/青之SP/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/青之SP/snap2.webp" class="card-img" alt="青之SP 学校内警察嶋田隆平 4~6 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">青之SP 学校内警察</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第4集：学生卷入毒品案件；第5集：校园盗窃案背后的真相；第6集：家庭暴力对学生的影响。嶋田的执法方式引发师生争议，但他坚持用法律守护校园安全</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1yciV2A2oykteduNHGSuc_A?pwd=vjf9" 
+                        data-uuid="qKyXL8NM">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2021-02-02</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/青之SP/snap3.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/青之SP/snap3.webp" class="card-img" alt="青之SP 学校内警察嶋田隆平 7~9 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">青之SP 学校内警察</h4><h6><i>（7 ~ 9 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第7集：校园性骚扰案件调查；第8集：学生援交背后的黑幕；第9集：重大校园事件即将发生，嶋田必须阻止悲剧。剧情逐渐揭示嶋田成为学校警察的真正原因</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1WissTlkZI0QVBaLRze_Npg?pwd=xe7q" 
+                        data-uuid="qJa8nBqc">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2021-02-23</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+                
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/青之SP/snap4.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/青之SP/snap4.webp" class="card-img" alt="青之SP 学校内警察嶋田隆平 10 最终话">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">青之SP 学校内警察</h4><h6><i>（第 10 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">最终话：校园危机爆发，嶋田隆平必须用尽全力保护学生安全。他的过去和来到这所学校的真正目的终于揭晓。师生们逐渐理解了他冷酷外表下对教育和正义的坚守，学校警察制度的意义得到体现</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1pb2FETj5M-royRLx-ZmzzQ?pwd=gghv" 
+                        data-uuid="KRXpuxJ6">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2021-03-16</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/爷爷25岁/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/爷爷25岁/title.webp" class="card-img" alt="爷爷 25 岁 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">爷爷 25 岁</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">藤原龙也饰演栗原稔。1964 年，稔上山拍照遭遇暴风雪跌入山谷。46 年后以冰冻姿态被发现，奇迹生还且保留 25 岁容貌，回到家中催化出一堆问题 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/14Al6NxGzhT-VyshXt5cbBQ?pwd=isk6" 
+                        data-uuid="wZuq33F2">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2010-01-15</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/爷爷25岁/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/爷爷25岁/snap2.webp" class="card-img" alt="爷爷 25 岁 4~6 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">爷爷 25 岁</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">藤原龙也饰演栗原稔。1964 年，稔上山拍照遭遇暴风雪跌入山谷。46 年后以冰冻姿态被发现，奇迹生还且保留 25 岁容貌，回到家中催化出一堆问题 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/141lFp1JFp4jZtESitYmzrQ?pwd=ghpx" 
+                        data-uuid="67hJ39Bz">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2010-02-05</small>
+            </div>
+          </div>
+        </div>
+
+   
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/爷爷25岁/snap3.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/爷爷25岁/snap3.webp" class="card-img" alt="爷爷 25 岁 7~8 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">爷爷 25 岁</h4><h6><i>（7 ~ 8 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">藤原龙也饰演栗原稔。1964 年，稔上山拍照遭遇暴风雪跌入山谷。46 年后以冰冻姿态被发现，奇迹生还且保留 25 岁容貌，回到家中催化出一堆问题 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1Bj2XQIODUvRFJMl71zYSvw?pwd=n6xy" 
+                        data-uuid="33v4Re4B">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2010-02-26</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/22年后的自白/title.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/22年后的自白/title.webp" class="card-img" alt="22 年后的自白：我是杀人犯">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">22 年后的自白</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">1995年，东京发生了连环绞杀案，五人被害，凶手无影无踪，该案成为悬案。该案早已过了诉讼有效期的 22 年后，曾根崎雅人（藤原龙也饰）出版了一本告白书，声称自己是22年前连环杀人案的凶手 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1gPiap8Ndgz6MQgPoTdmYqw?pwd=hmuv" 
+                        data-uuid="2yHobp8g">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2019-01-11</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/鸠的击退法/title.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/鸠的击退法/title.webp" class="card-img" alt="鸠的击退法">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">鸠的击退法</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">改编自佐佐木让推理小说。电影讲述津田(藤原龙也饰)在酒吧里让自己的编辑鸟饲阅读他正在创作中的新小说，但鸟饲读起来越来越不像小说中的故事，她开始验证小说是否虚构，惊愕的真相渐渐展开。</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1R-1yPPtlj9ASlmGIWYRM4w?pwd=3p2u" 
+                        data-uuid="PUQF4Nqx">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2021-08-27</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/film/藤原龙也系列/三分之一/title.webp" target="_blank">
+                  <img src="../res/film/藤原龙也系列/三分之一/title.webp" class="card-img" alt="三分之一">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">三分之一</h4>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">在俱乐部担任雇佣店长的清原修造（藤原龙也 饰）赌马时弄丢店里的营业额，为免被老板杀死，修造找来自己的小弟和生意濒临破产的常客金森健，策划了抢劫银行的行动。事成后分赃不均产生内讧。而在这次银行劫案背后，又有多方势力以及阴谋介入其中 ……</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/14_YTjNih2Iu0DnB4wc7oOw?pwd=5bwf" 
+                        data-uuid="gp2xMJ7m">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mkv-Yes-purple.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容">
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2014-04-01</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/GetReady/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/GetReady/title.webp" class="card-img" alt="GetReady 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">Get Ready !</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">讲述神秘地下医疗团队"假面Doctors"不惜一切手段抢救病患生命以换取高额报酬的故事。第 1-3 集：前所未见的密医团队登场，金钱的奴隶，拯救连环杀人犯</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1QcZZE8E5Txt47AF1bvzN3g?pwd=9224" 
+                        data-uuid="G4aAeXC4">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2023-01-08</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/GetReady/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/GetReady/snap2.webp" class="card-img" alt="GetReady 4~6 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">Get Ready !</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第 4-6 集：生命还是才华？天才雕刻家面临抉择；密医团队起源的故事；水面的秘密。团队成员身份代号为王牌（Ace）、小丑（Joker）、皇后（Queen）、黑桃（Spade）、梅花（Clover）</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1-lDf5Hl4hzVRgHBCvxpJsw?pwd=sj5x" 
+                        data-uuid="h4Qs6j2c">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2023-01-29</small>
+            </div>
+          </div>
+        </div>
+        
+ 
+
+
+      
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/GetReady/snap3.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/GetReady/snap3.webp" class="card-img" alt="GetReady 7~9 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">Get Ready !</h4><h6><i>（7 ~ 9 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第 7-9 集：自杀未遂背后的真相；没能挽救的性命，悲惨的过去揭晓；因缘对决，密医团队面临崩坏危机。警视厅特务搜查课开始追查假面 Doctors 的真实身份</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1c2BLvjgpUcqfCRvH6oG7-A?pwd=sch8" 
+                        data-uuid="xrN6RYEW">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2023-02-19</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/GetReady/snap4.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/GetReady/snap4.webp" class="card-img" alt="GetReady 10 最终话">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">Get Ready !</h4><h6><i>（第 10 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">最终话：再见了，密医团队。衝击的结局！Ace 因心理创伤无法手术，团队面临最大危机 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1Uwczz1_y9pgFkxrqsRTWAg?pwd=aifq" 
+                        data-uuid="gxpMg674">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2023-03-12</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/逆转重生/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/逆转重生/title.webp" class="card-img" alt="逆转重生 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">逆转重生</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">藤原龙也主演，改编自湊佳苗推理小说。深濑和久收到匿名信"深濑和久杀了人"，10年前好友广泽由树离奇死亡的真相逐渐浮出水面。第1-3集：挚友之死的秘密，复仇开始，又出现牺牲者</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1ID-UxfyfslKUi_TqWUXkfA?pwd=tud8" 
+                        data-uuid="o9HK4ZUH">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2017-04-14</small>
+            </div>
+          </div>
+        </div>
+
+ 
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/逆转重生/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/逆转重生/snap2.webp" class="card-img" alt="逆转重生 4~6 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">逆转重生</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第4-6集：犯人是女性？从月台跌落；女友遭魔爪袭击，又有一人消失；新的嫌疑者，隐藏在爱媛的挚友之谜。控诉者的身影逼近，深濑等人必须面对好友死亡的真相</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1oWGwmwsU6urK4faIUaEmIw?pwd=vnmg" 
+                        data-uuid="fizJcU7R">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2017-05-05</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/逆转重生/snap3.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/逆转重生/snap3.webp" class="card-img" alt="逆转重生 7~9 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">逆转重生</h4><h6><i>（7 ~ 9 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第7-9集：控诉者的身份揭晓；最糟糕的复仇剧，控诉者的真正目的；真正的犯人终于揭晓！杀死挚友的是这个人！悬疑剧情步步紧逼，真相即将大白</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1IQUJXz-kTM7zAHiAt3bH6w?pwd=mf6j" 
+                        data-uuid="jPP76rrk">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2017-05-26</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/逆转重生/snap4.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/逆转重生/snap4.webp" class="card-img" alt="逆转重生 10 最终话">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">逆转重生</h4><h6><i>（第 10 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">最终话：谁也不知道真正的结局，今晚一切都将揭晓。即将揭开 10 年前广泽之死的那场"事故"和"事件"背后的种种真相 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/15OvRJvJU8obwWSs7GjzYBQ?pwd=xxiq" 
+                        data-uuid="NXhiZx39">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2017-06-16</small>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/遗失身份/title.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/遗失身份/title.webp" class="card-img" alt="遗失身份 1~3 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">遗失身份</h4><h6><i>（1 ~ 3 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">优秀程序员藤堂新一（藤原龙也 饰）突然被神秘人抹杀身份，户籍和身份证都被换成陌生人。第1-3集：新一的身份被冒名顶替者窃取，公司怀疑他是冒牌货，为夺回人生他与藏在暗处的敌人展开战斗</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1gsgFlEM4xlEZizDR47_2gA?pwd=bpz7" 
+                        data-uuid="9BG6gLiP">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2016-07-17</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/遗失身份/snap2.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/遗失身份/snap2.webp" class="card-img" alt="遗失身份 4~6 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">遗失身份</h4><h6><i>（4 ~ 6 集）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第4-6集：长崎遥从阳台跳下；齐藤袭击新一时中刀死亡；新一被神秘气体袭击昏迷。新一失踪一月；看护弥生失踪，小山内被袭击关入后备箱沉入海中 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1VMSr-8GrqNQbCDZZy8Rw1g?pwd=sdkd" 
+                        data-uuid="DxPUcQ2J">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2016-08-21</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card mb-3 bold-border" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="../res/tv/藤原龙也系列/遗失身份/snap3.webp" target="_blank">
+                  <img src="../res/tv/藤原龙也系列/遗失身份/snap3.webp" class="card-img" alt="遗失身份 7~9 集">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h4 class="card-title">遗失身份</h4><h6><i>（7 ~ 9 集 / 最终话）</i></h6>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">第7-9集/最终话：小山内奇迹生还；新一策划无人机计划对抗幕后势力。公安追捕，无人机袭击，新一在绝境中脱身。然而意想不到的人物现身，难以置信的真相即将揭晓 ...</li>
+                    <li class="list-group-item list-group-item-success">语言：日语</li>
+                    <li class="list-group-item list-group-item-info">字幕：中文</li>
+                    <li class="list-group-item list-group-item-danger">下载：
+                      <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                        data-bs-download="https://pan.baidu.com/s/1XQ71lxecxBPfXiiaMnEGiA?pwd=3dau" 
+                        data-uuid="HYLyLDk9">[百度网盘]</button>
+                    </li>
+                    <li class="list-group-item list-group-item-warning">
+                      <img src="https://img.shields.io/badge/mp4-Yes-blue.svg" data-bs-toggle="tooltip" title="现代通用格式，所有设备兼容"> 
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">上映时间：2016-09-11</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <br/>
+
+    <hr/>
+
+    <br/>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+    
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">搜索结果</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="searchResults">
+                  <div class="text-center text-muted">
+                      <p>正在搜索...</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!-- ==================== 脚本加载区 ==================== -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="../docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 -->
+    <script src="../docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 全局搜索功能 -->
+    <script src="../docs/js/search.js"></script>
+    
+    <!-- 4. 页面保护脚本 -->
+    <script src="../docs/js/protection.min.js" defer></script>
+
+</body>
+</html>
