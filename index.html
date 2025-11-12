@@ -14,14 +14,68 @@
     <link href="./docs/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./docs/css/style.css">
     
-    <!-- 核心脚本文件 -->
+    <!-- Bootstrap 框架脚本 - 模态框功能依赖 -->
     <script src="./docs/js/bootstrap.bundle.min.js"></script>
-    <script src="./docs/js/navigation.js"></script>
     
     <!-- SEO 优化脚本（独立管理所有 SEO 标签） -->
     <script src="./docs/js/seo-meta.js"></script>
 </head>
 <body>
+    <!-- 支付模态框 - 优先加载确保功能可用 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="./imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="./imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="./imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
     <div class="container my-3 sticky-top">
       <div class="header-container">
           <h1 class="header-title">
@@ -5753,61 +5807,25 @@
         <div id="navLinks" class="nav-links"></div>
     </div>
     
-    <!-- 支付模态框 -->
-    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-      <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <div class="d-flex justify-content-around">
-                      <img src="./imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
-                      <img src="./imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
-                      <img src="./imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
-                  </div>
-                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
-                      <hr>
-                      <div class="alert alert-info">
-                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
-                          <p class="d-flex justify-content-between align-items-center">
-                              <span>
-                                  <strong>提取码：</strong>
-                                  <span id="modalExtractCode"></span>
-                              </span>
-                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                                  </svg>
-                                  复制
-                              </button>
-                          </p>
-                          <p class="d-flex justify-content-between align-items-center">
-                              <span>
-                                  <strong>解压密码：</strong>
-                                  <span id="modalUUID"></span>
-                              </span>
-                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                                  </svg>
-                                  复制
-                              </button>
-                          </p>
-                      </div>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
-                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>我已支付 (60)</button>
-              </div>
-          </div>
-      </div>
-    </div>
-    <script src="./docs/js/main.js" defer></script>
+    <!-- ==================== 脚本加载区 ==================== -->
+    <!-- 
+        加载顺序说明：
+        1. main.js - 模态框倒计时核心功能（立即加载，无需等待 DOM）
+        2. lazy-load.js - 图片懒加载（需要 DOM 加载完成）
+        3. navigation.js - 快速导航生成（需要所有 section-* 元素存在）
+        4. protection.min.js - 页面保护脚本（最后执行）
+    -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="./docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 - DOMContentLoaded 时执行 -->
+    <script src="./docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 快速导航生成 - 依赖页面中的 section-* 元素 -->
+    <script src="./docs/js/navigation.js"></script>
+    
+    <!-- 4. 页面保护脚本 - 延迟加载不影响核心功能 -->
     <script src="./docs/js/protection.min.js" defer></script>
 
 </body>
