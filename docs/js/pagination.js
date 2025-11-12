@@ -311,14 +311,14 @@
         const navBar = document.createElement('div');
         navBar.className = 'section-navigation-bar';
         navBar.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 20px;">
-                <button id="prevSection" class="btn btn-sm btn-outline-primary" style="min-width: 100px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #1a1a1a 50%, #2d2d2d 75%, #1a1a1a 100%); border: 2px solid #d4af37; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
+                <button id="prevSection" class="btn btn-sm" style="min-width: 120px; background: linear-gradient(135deg, #d4af37, #f4e5a1, #d4af37); color: #000; border: 2px solid #d4af37; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.3);">
                     ← 上一个系列
                 </button>
-                <span id="currentSectionName" style="font-weight: bold; color: #333;">
+                <span id="currentSectionName" style="font-weight: bold; background: linear-gradient(135deg, #d4af37, #f4e5a1, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 18px; text-shadow: 0 2px 4px rgba(212, 175, 55, 0.5); filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.5));">
                     加载中...
                 </span>
-                <button id="nextSection" class="btn btn-sm btn-outline-primary" style="min-width: 100px;">
+                <button id="nextSection" class="btn btn-sm" style="min-width: 120px; background: linear-gradient(135deg, #d4af37, #f4e5a1, #d4af37); color: #000; border: 2px solid #d4af37; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.3);">
                     下一个系列 →
                 </button>
             </div>

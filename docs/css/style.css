@@ -221,9 +221,29 @@ body {
     }
 }
 
+/* 导航按钮样式 */
+.section-navigation-bar button {
+    transition: all 0.3s ease;
+}
+
+.section-navigation-bar button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #f4e5a1, #d4af37, #f4e5a1) !important;
+    border-color: #f4e5a1 !important;
+    transform: scale(1.08);
+    box-shadow: 0 4px 15px rgba(244, 229, 161, 0.6);
+}
+
+.section-navigation-bar button:active:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
+
 .section-navigation-bar button:disabled {
-    opacity: 0.5;
+    opacity: 0.4 !important;
     cursor: not-allowed;
+    background: linear-gradient(135deg, #666, #555, #666) !important;
+    border-color: #555 !important;
+    filter: grayscale(100%);
 }
 
 /* Section 切换动画 */
@@ -263,5 +283,6 @@ body {
         min-width: 80px !important;
     }
 }
+  
   
   
