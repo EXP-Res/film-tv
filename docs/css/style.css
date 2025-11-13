@@ -77,8 +77,8 @@ body {
 /* 搜索框容器 */
 .search-container {
     flex-grow: 1; /* 搜索框占据中间剩余空间 */
-    max-width: 500px; /* 最大宽度 */
-    min-width: 200px; /* 最小宽度 */
+    max-width: 600px; /* 最大宽度（增加 20%） */
+    min-width: 240px; /* 最小宽度（增加 20%） */
 }
 
 .search-container .input-group {
@@ -410,6 +410,51 @@ body {
     font-weight: bold;
     padding: 2px 4px;
     border-radius: 3px;
+}
+
+/* 搜索模态框样式 */
+#searchModal .modal-dialog {
+    max-width: 912px; /* 约为 Bootstrap container (1140px) 的 80% */
+}
+
+@media (max-width: 1200px) {
+    #searchModal .modal-dialog {
+        max-width: 80%; /* 在中等屏幕上使用百分比 */
+    }
+}
+
+#searchModal .modal-content {
+    border: 3px solid #d4af37; /* 金色边框 */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+#searchModal .modal-header {
+    background: linear-gradient(to right, #ffd700, #b8860b);
+    color: #fff;
+    border-bottom: 3px solid #b8860b;
+    border-radius: 12px 12px 0 0;
+    padding: 20px;
+}
+
+#searchModal .modal-title {
+    font-weight: bold;
+    font-size: 1.3rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+#searchModal .btn-close {
+    filter: brightness(0) invert(1); /* 白色关闭按钮 */
+    opacity: 0.8;
+}
+
+#searchModal .btn-close:hover {
+    opacity: 1;
+}
+
+#searchModal .modal-body {
+    padding: 25px;
+    background-color: #f8f9fa;
 }
 
 /* 搜索结果卡片样式 */
