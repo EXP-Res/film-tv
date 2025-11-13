@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     downloadInfo.style.display = 'none';
 
     confirmButton.disabled = true;
-    confirmButton.textContent = `我已支付 (${cnt})`;
+    confirmButton.textContent = `等待支付 (${cnt})`;
 
     timer = setInterval(function () {
       cnt--;
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
           // 禁用按钮，防止重复点击
           confirmButton.disabled = true;
-          confirmButton.textContent = '请打开下载链接并保存解压密码';
+          confirmButton.textContent = '支付窗口即将关闭，请尽快保存';
 
           // 可选：触发下载
           // const a = document.createElement('a');
@@ -150,13 +150,13 @@ document.addEventListener('DOMContentLoaded', function() {
           // a.click();
           // document.body.removeChild(a);
 
-          // 在显示下载信息后的 30 秒内自动关闭
-          // autoCloseTimer = setTimeout(function () {
-          //   closeModal();
-          // }, 30000);
+          // 在显示下载信息后的 120 秒内自动关闭
+          autoCloseTimer = setTimeout(function () {
+            closeModal();
+          }, 120000);
         };
       } else {
-        confirmButton.textContent = `我已支付 (${cnt})`;
+        confirmButton.textContent = `等待支付 (${cnt})`;
       }
     }, 1000);
   });
