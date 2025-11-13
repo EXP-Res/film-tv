@@ -6,6 +6,10 @@
 (function() {
     'use strict';
 
+    // 检测当前页面路径，判断是主页还是 section 页面
+    const isIndexPage = !window.location.pathname.includes('/sections/');
+    const sectionsPath = isIndexPage ? './sections/' : './';
+
     // Section 配置
     const SECTIONS = [
         { file: 'section-01.html', name: '世界奇妙物语系列' },
@@ -92,7 +96,7 @@
         // 并行加载所有 section 页面
         const promises = SECTIONS.map(async (section) => {
             try {
-                const response = await fetch(`./sections/${section.file}`);
+                const response = await fetch(`${sectionsPath}${section.file}`);
                 if (!response.ok) {
                     console.warn(`无法加载 ${section.file}`);
                     return [];
@@ -157,8 +161,15 @@
                 : card.description;
             const highlightedDesc = highlightKeyword(displayDesc, keyword);
 
-            // 修正缩略图路径（相对于 sections/ 目录）
-            const thumbnailPath = card.thumbnail ? `./sections/${card.thumbnail}` : '';
+            // 修正缩略图路径
+            let thumbnailPath = card.thumbnail;
+            if (thumbnailPath) {
+                // 如果在主页，添加 sections/ 前缀；如果在 section 页面，保持不变
+                thumbnailPath = isIndexPage ? `./sections/${thumbnailPath}` : thumbnailPath;
+            }
+
+            // 修正跳转链接
+            const sectionLink = isIndexPage ? `./sections/${card.sectionFile}` : `./${card.sectionFile}`;
 
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
@@ -174,7 +185,7 @@
                                     </svg>
                                     ${card.sectionName}
                                 </small>
-                                <a href="./sections/${card.sectionFile}" class="btn btn-sm btn-outline-primary">查看详情</a>
+                                <a href="${sectionLink}" class="btn btn-sm btn-outline-primary">查看详情</a>
                             </div>
                         </div>
                     </div>
@@ -264,8 +275,9 @@
 
         if (searchInput) {
             // 回车键触发搜索
-            searchInput.addEventListener('keypress', function(e) {
+            searchInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
+                    e.preventDefault(); // 防止表单提交
                     performSearch();
                 }
             });

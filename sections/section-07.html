@@ -82,6 +82,24 @@
           <h1 class="header-title">
               <img src="../docs/movies.png" alt="logo" style="height: 120px;">
           </h1>
+          
+          <!-- 全局搜索框 -->
+          <div class="search-container">
+              <div class="input-group">
+                  <input type="text" 
+                         class="form-control" 
+                         id="globalSearchInput" 
+                         placeholder="搜索电影/剧集..." 
+                         aria-label="搜索">
+                  <button class="btn btn-primary" type="button" id="globalSearchBtn">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                      </svg>
+                      搜索
+                  </button>
+              </div>
+          </div>
+          
           <span class="header-explanation">
               本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压<br/>如遇解压密码错误，可加 QQ 群 209442520 处理
           </span>
@@ -344,7 +362,7 @@
     <script src="../docs/js/lazy-load.js"></script>
     
     <!-- 3. 全局搜索功能 -->
-    <script src="../docs/js/search.js"></script>
+    <script src="../docs/js/global-search.js"></script>
     
     <!-- 4. 页面保护脚本 -->
     <script src="../docs/js/protection.min.js" defer></script>
