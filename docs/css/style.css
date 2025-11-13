@@ -67,19 +67,62 @@ body {
 .header-container {
     display: flex;
     align-items: center;
+    gap: 20px; /* 元素之间的间距 */
 }
 .header-title {
     margin-bottom: 0;
-    flex-grow: 1;
+    flex-shrink: 0; /* Logo 不缩小 */
 }
+
+/* 搜索框容器 */
+.search-container {
+    flex-grow: 1; /* 搜索框占据中间剩余空间 */
+    max-width: 500px; /* 最大宽度 */
+    min-width: 200px; /* 最小宽度 */
+}
+
+.search-container .input-group {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.search-container .form-control {
+    border: 2px solid #d4af37;
+    border-right: none;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+.search-container .form-control:focus {
+    box-shadow: none;
+    border-color: #b8860b;
+}
+
+.search-container .btn {
+    border: 2px solid #d4af37;
+    border-left: none;
+    background: linear-gradient(to right, #ffd700, #b8860b);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.search-container .btn:hover {
+    background: linear-gradient(to right, #b8860b, #ffd700);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 .header-explanation {
     padding: 10px;
-    margin-left: 20px;
     background-image: linear-gradient(to right, #ffd700, #b8860b);
     border: 3px solid hsl(210.8, 73.86%, 30%);
     border-radius: 5px;
     white-space: nowrap;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex-shrink: 0; /* 公告不缩小 */
 }
 
 
@@ -359,6 +402,33 @@ body {
         min-width: 80px !important;
     }
 }
+
+/* 搜索结果高亮显示 */
+#searchResults mark {
+    background-color: #ffd700;
+    color: #000;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* 搜索结果卡片样式 */
+#searchResults .card {
+    transition: all 0.3s ease;
+    border: 2px solid #ddd;
+}
+
+#searchResults .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-color: #d4af37;
+}
+
+#searchResults .card-img-top {
+    border-bottom: 2px solid #f0f0f0;
+}
+  
+  
   
   
   
