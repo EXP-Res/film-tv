@@ -174,6 +174,9 @@
 
             // 修正跳转链接，添加锚点
             const sectionLink = isIndexPage ? `./sections/${card.sectionFile}#${card.anchorId}` : `./${card.sectionFile}#${card.anchorId}`;
+            
+            // 判断是否是当前页面
+            const isCurrentPage = !isIndexPage && window.location.pathname.includes(card.sectionFile);
 
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
@@ -189,7 +192,10 @@
                                     </svg>
                                     ${card.sectionName}
                                 </small>
-                                <a href="${sectionLink}" class="btn btn-sm btn-outline-primary">查看详情</a>
+                                <a href="${sectionLink}" 
+                                   class="btn btn-sm btn-outline-primary search-result-link" 
+                                   data-anchor="${card.anchorId}"
+                                   data-current-page="${isCurrentPage}">查看详情</a>
                             </div>
                         </div>
                     </div>
@@ -199,6 +205,65 @@
         html += '</div>';
 
         resultsContainer.innerHTML = html;
+        
+        // 为所有"查看详情"按钮绑定点击事件
+        bindSearchResultLinks();
+    }
+
+    /**
+     * 为搜索结果链接绑定点击事件
+     * 如果点击的是当前页面的卡片，关闭模态框并滚动到位置
+     */
+    function bindSearchResultLinks() {
+        const links = document.querySelectorAll('.search-result-link');
+        
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const isCurrentPage = this.getAttribute('data-current-page') === 'true';
+                
+                if (isCurrentPage) {
+                    // 当前页面：阻止默认跳转，关闭模态框，滚动到锚点
+                    e.preventDefault();
+                    
+                    const anchorId = this.getAttribute('data-anchor');
+                    const targetElement = document.getElementById(anchorId);
+                    
+                    if (targetElement) {
+                        // 关闭搜索模态框
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+                        
+                        // 等待模态框关闭动画完成后再滚动
+                        setTimeout(() => {
+                            // 更新 URL hash（不触发页面跳转）
+                            history.pushState(null, null, `#${anchorId}`);
+                            
+                            // 滚动到目标位置
+                            targetElement.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center' 
+                            });
+                            
+                            // 添加高亮效果
+                            targetElement.style.transition = 'all 0.5s ease';
+                            targetElement.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.8)';
+                            targetElement.style.transform = 'scale(1.02)';
+                            
+                            // 2秒后移除高亮
+                            setTimeout(() => {
+                                targetElement.style.boxShadow = '';
+                                targetElement.style.transform = '';
+                            }, 2000);
+                        }, 300);
+                    }
+                } else {
+                    // 跨页面：正常跳转（会打开新页面）
+                    // 不需要做任何处理，浏览器默认行为
+                }
+            });
+        });
     }
 
     /**
