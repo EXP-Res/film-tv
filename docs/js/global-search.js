@@ -45,6 +45,9 @@
                 const titleElement = card.querySelector('.card-title');
                 const title = titleElement ? titleElement.textContent.trim() : '';
 
+                // 生成唯一的锚点ID（使用标题的简化版本）
+                const anchorId = title ? 'card-' + title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '-').substring(0, 50) : '';
+
                 // 提取简介（在 list-group-item-primary 中）
                 const descElement = card.querySelector('.list-group-item-primary');
                 const description = descElement ? descElement.textContent.trim() : '';
@@ -64,6 +67,7 @@
                 if (title) {
                     cards.push({
                         title,
+                        anchorId,
                         description,
                         thumbnail,
                         language,
@@ -168,8 +172,8 @@
                 thumbnailPath = isIndexPage ? `./sections/${thumbnailPath}` : thumbnailPath;
             }
 
-            // 修正跳转链接
-            const sectionLink = isIndexPage ? `./sections/${card.sectionFile}` : `./${card.sectionFile}`;
+            // 修正跳转链接，添加锚点
+            const sectionLink = isIndexPage ? `./sections/${card.sectionFile}#${card.anchorId}` : `./${card.sectionFile}#${card.anchorId}`;
 
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
