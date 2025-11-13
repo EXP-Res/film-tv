@@ -69,9 +69,19 @@ body {
     align-items: center;
     gap: 20px; /* 元素之间的间距 */
 }
+
 .header-title {
     margin-bottom: 0;
     flex-shrink: 0; /* Logo 不缩小 */
+}
+
+/* Logo 图片样式 - 防止变形 */
+.header-logo {
+    height: 120px;
+    width: auto; /* 保持宽高比 */
+    max-width: 100%; /* 防止溢出 */
+    object-fit: contain; /* 保持图片比例 */
+    display: block;
 }
 
 /* 搜索框容器 */
@@ -611,7 +621,419 @@ body {
     border: none;
     color: #fff;
 }
-  
+
+/* ========================================
+   移动端响应式优化
+   ======================================== */
+
+/* 平板设备 (768px - 991px) */
+@media (max-width: 991px) {
+    /* 头部容器调整 */
+    .header-container {
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .header-title {
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Logo 响应式调整 */
+    .header-logo {
+        max-height: 200px;
+        height: auto;
+        max-width: 100%;
+    }
+    
+    .search-container {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 15px;
+    }
+    
+    .header-explanation {
+        order: 2;
+        width: 100%;
+        text-align: center;
+        white-space: normal;
+        font-size: 14px;
+    }
+    
+    /* 卡片调整 */
+    .card {
+        margin-bottom: 15px !important;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    /* 导航栏调整 */
+    .section-navigation-bar {
+        padding: 10px 5px;
+    }
+    
+    .section-navigation-bar button {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+}
+
+/* 手机设备 (小于 768px) */
+@media (max-width: 768px) {
+    /* 头部优化 */
+    .header-container {
+        padding: 10px 5px;
+    }
+    
+    /* Logo 手机端调整 */
+    .header-logo {
+        max-height: 150px;
+        height: auto;
+    }
+    
+    .search-container {
+        margin: 0 10px;
+    }
+    
+    .search-container .form-control {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+    
+    .search-container .btn {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+    
+    .search-container .btn svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .header-explanation {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    /* 容器优化 */
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    /* 卡片优化 */
+    .card {
+        margin-bottom: 12px !important;
+    }
+    
+    .card-body {
+        padding: 12px;
+    }
+    
+    .card-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .card-text {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+    
+    .list-group-item {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    /* 按钮优化 */
+    .btn {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+    
+    .btn-group .btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    /* 徽章优化 */
+    .badge {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+    
+    /* 模态框优化 */
+    #searchModal .modal-dialog,
+    #downloadModal .modal-dialog {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+    
+    #searchModal .modal-body,
+    #downloadModal .modal-body {
+        padding: 15px;
+    }
+    
+    #searchModal .modal-header,
+    #downloadModal .modal-header {
+        padding: 12px 15px;
+    }
+    
+    #searchModal .modal-title,
+    #downloadModal .modal-title {
+        font-size: 18px;
+    }
+    
+    /* 搜索结果卡片 */
+    #searchResults .card {
+        margin-bottom: 10px;
+    }
+    
+    #searchResults .card-body {
+        padding: 10px;
+    }
+    
+    #searchResults .card-title {
+        font-size: 15px;
+    }
+    
+    #searchResults .card-text {
+        font-size: 12px;
+    }
+    
+    /* 支付图片优化 */
+    #downloadModal .modal-body img {
+        max-width: 100%;
+        height: auto;
+        margin: 5px;
+    }
+    
+    #downloadModal .modal-body .d-flex {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    /* 导航栏优化 */
+    .section-navigation-bar button {
+        font-size: 11px;
+        padding: 4px 8px;
+        min-width: 60px !important;
+    }
+    
+    /* 回到顶部按钮 */
+    .back-to-top {
+        width: 40px;
+        height: 40px;
+        bottom: 15px;
+        right: 15px;
+        font-size: 18px;
+    }
+}
+
+/* 小手机设备 (小于 576px) */
+@media (max-width: 576px) {
+    /* 头部进一步优化 */
+    .header-logo {
+        max-height: 120px;
+        height: auto;
+    }
+    
+    .search-container {
+        min-width: auto;
+        margin: 0 5px;
+    }
+    
+    .search-container .form-control {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .search-container .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    /* 小屏幕隐藏搜索按钮文字，只保留图标 */
+    .search-container .btn {
+        font-size: 0;
+    }
+    
+    .search-container .btn svg {
+        font-size: initial;
+        width: 16px;
+        height: 16px;
+    }
+    
+    .header-explanation {
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    /* 容器进一步优化 */
+    .container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    /* 卡片进一步优化 */
+    .card {
+        margin-bottom: 10px !important;
+        border-width: 1px;
+    }
+    
+    .card-body {
+        padding: 10px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+    
+    .card-text {
+        font-size: 12px;
+    }
+    
+    .list-group-item {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    /* 按钮进一步优化 */
+    .btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    .btn-group {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .btn-group .btn {
+        flex: 1;
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+    
+    /* 模态框进一步优化 */
+    #searchModal .modal-dialog,
+    #downloadModal .modal-dialog {
+        margin: 5px;
+        max-width: calc(100% - 10px);
+    }
+    
+    #searchModal .modal-body,
+    #downloadModal .modal-body {
+        padding: 10px;
+    }
+    
+    #searchModal .modal-header,
+    #downloadModal .modal-header {
+        padding: 10px;
+    }
+    
+    #searchModal .modal-title,
+    #downloadModal .modal-title {
+        font-size: 16px;
+    }
+    
+    /* 支付模态框按钮 */
+    #downloadModal .modal-footer {
+        padding: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    #downloadModal .modal-footer .btn {
+        flex: 1;
+        min-width: calc(50% - 4px);
+    }
+    
+    /* 导航栏进一步优化 */
+    .section-navigation-bar {
+        font-size: 12px;
+        padding: 8px 2px;
+    }
+    
+    .section-navigation-bar button {
+        font-size: 10px;
+        padding: 3px 6px;
+        min-width: 50px !important;
+        margin: 2px;
+    }
+    
+    /* 回到顶部按钮 */
+    .back-to-top {
+        width: 35px;
+        height: 35px;
+        bottom: 10px;
+        right: 10px;
+        font-size: 16px;
+    }
+    
+    /* 表格响应式 */
+    table {
+        font-size: 12px;
+    }
+    
+    table th,
+    table td {
+        padding: 6px;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header-container {
+        padding: 5px;
+    }
+    
+    /* Logo 横屏模式 */
+    .header-logo {
+        max-height: 40px;
+        height: auto;
+        width: auto;
+    }
+    
+    .search-container {
+        max-width: 400px;
+    }
+    
+    .back-to-top {
+        width: 35px;
+        height: 35px;
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+    /* 增大可点击区域 */
+    .btn,
+    button,
+    a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* 优化卡片点击 */
+    .card {
+        cursor: pointer;
+    }
+    
+    /* 移除hover效果，使用active状态 */
+    .btn:active,
+    .card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+}
   
   
   
