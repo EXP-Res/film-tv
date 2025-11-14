@@ -689,10 +689,9 @@ body {
         padding: 10px 5px;
     }
     
-    /* Logo 手机端调整 */
-    .header-logo {
-        max-height: 150px;
-        height: auto;
+    /* 移动端隐藏 Logo，节省屏幕空间 */
+    .header-title {
+        display: none;
     }
     
     .search-container {
