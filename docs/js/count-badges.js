@@ -16,8 +16,11 @@
         { file: 'section-06.html', index: 5 },
         { file: 'section-07.html', index: 6 },
         { file: 'section-08.html', index: 7 },
-        { file: 'section-98.html', index: 8 },
-        { file: 'section-99.html', index: 9 }
+        { file: 'section-09.html', index: 8 },
+        { file: 'section-10.html', index: 9 },
+        { file: 'section-11.html', index: 10 },
+        { file: 'section-98.html', index: 11 },
+        { file: 'section-99.html', index: 12 }
     ];
 
     /**
