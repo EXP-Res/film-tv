@@ -19,7 +19,11 @@
         { file: 'section-05.html', name: '哈利波特系列' },
         { file: 'section-06.html', name: '死神来了系列' },
         { file: 'section-07.html', name: '数码暴龙系列' },
-        { file: 'section-08.html', name: '柯南剧场版' },
+        { file: 'section-08.html', name: '推理探案系列' },
+        { file: 'section-09.html', name: '异世界系列' },
+        { file: 'section-10.html', name: '刀剑神域系列' },
+        { file: 'section-11.html', name: '一拳超人系列' },
+        { file: 'section-12.html', name: '游戏王系列' },
         { file: 'section-98.html', name: '精选动画' },
         { file: 'section-99.html', name: '其他' }
     ];
