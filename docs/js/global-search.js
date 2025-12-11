@@ -24,6 +24,7 @@
         { file: 'section-10.html', name: '刀剑神域系列' },
         { file: 'section-11.html', name: '一拳超人系列' },
         { file: 'section-12.html', name: '游戏王系列' },
+        { file: 'section-13.html', name: '三大民工漫' },
         { file: 'section-98.html', name: '精选动画' },
         { file: 'section-99.html', name: '其他' }
     ];
