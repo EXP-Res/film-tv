@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础标题（会被 SEO 脚本覆盖） -->
+    <title>柯南剧场版 - 经典影视作品</title>
+    
+    <!-- 网站图标 -->
+    <link rel="icon" href="../docs/favicon.png" type="image/png">
+    
+    <!-- 样式表 -->
+    <link href="../docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../docs/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap 框架脚本 -->
+    <script src="../docs/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- CDN 加速配置（必须最先加载）-->
+    <script src="../docs/js/cdn-config.js"></script>
+    
+    <!-- SEO 优化脚本 -->
+    <script src="../docs/js/seo-meta.js"></script>
+</head>
+<body>
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="downloadModalLabel">请在 60 秒内<font color="red">支付 5 元</font>后下载：</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex justify-content-around">
+                      <img src="../imgs/pay/alipay.png" class="img-fluid" alt="alipay" width="33%">
+                      <img src="../imgs/pay/wechat.png" class="img-fluid" alt="wechat" width="33%">
+                      <img src="../imgs/pay/QQ.png" class="img-fluid" alt="QQ" width="33%">
+                  </div>
+                  <div id="downloadInfo" style="display: none; margin-top: 20px;">
+                      <hr>
+                      <div class="alert alert-info">
+                          <p><strong>下载链接：</strong><a id="modalDownloadLink" href="#" target="_blank">[点我下载]</a></p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>提取码：</strong>
+                                  <span id="modalExtractCode"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalExtractCode', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                          <p class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  <strong>解压密码：</strong>
+                                  <span id="modalUUID"></span>
+                              </span>
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('modalUUID', event)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  复制
+                              </button>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">取消下载</button>
+                  <button type="button" class="btn btn-primary" id="confirmButton" disabled>等待支付 (60)</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 页面头部 -->
+    <div class="container my-3 sticky-top">
+      <div class="header-container">
+          <h1 class="header-title">
+              <img src="../docs/movies.png" alt="logo" class="header-logo">
+          </h1>
+          
+          <!-- 全局搜索框 -->
+          <div class="search-container">
+              <div class="input-group">
+                  <input type="text" 
+                         class="form-control" 
+                         id="globalSearchInput" 
+                         placeholder="搜索电影/剧集..." 
+                         aria-label="搜索">
+                  <button class="btn btn-primary" type="button" id="globalSearchBtn">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                      </svg>
+                      搜索
+                  </button>
+              </div>
+          </div>
+          
+          <span class="header-explanation">
+              本站所有资源下载均需 <a target="_blank" href="https://www.7-zip.org/">7-Zip</a> 工具解压<br/>如遇解压密码错误，可加 QQ 群 209442520 处理
+          </span>
+      </div>
+      <div class="card-container" id="cardContainer"></div>
+    </div>
+
+    <hr/>
+    <h4 id="section-08" style="color:#ffff00; background-color:#000000; text-align: center;">JOJO 系列</h4>
+    <hr/>
+
+    <div class="container">
+      <div class="row">
+
+<!--
+
+这是模板。
+引用 section-**.html 需要修改 3 处地方：
+1. index.html
+2. count-badges.js
+3. global-search.js
+
+-->
+
+      </div>
+    </div>
+
+    <br/>
+    <hr/>
+    <br/>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        </svg>
+    </button>
+    
+    <!-- 返回首页按钮 -->
+    <a href="../index.html" class="back-to-home" title="返回首页">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+        </svg>
+    </a>
+
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">搜索结果</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="searchResults">
+                  <div class="text-center text-muted">
+                      <p>正在搜索...</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 回到顶部脚本 -->
+    <script>
+        // 回到顶部功能
+        window.onscroll = function() {
+            const backToTopBtn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 复制到剪贴板功能
+        function copyToClipboard(elementId, event) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.currentTarget;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span style="color: green;">✓ 已复制</span>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制');
+            });
+        }
+
+        // 模态框处理
+        let countdownInterval;
+        const downloadModal = document.getElementById('downloadModal');
+        
+        downloadModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const downloadLink = button.getAttribute('data-bs-download');
+            const uuid = button.getAttribute('data-uuid');
+            
+            // 提取百度网盘提取码
+            let extractCode = '';
+            if (downloadLink && downloadLink.includes('pwd=')) {
+                const match = downloadLink.match(/pwd=([a-zA-Z0-9]+)/);
+                if (match) {
+                    extractCode = match[1];
+                }
+            }
+            
+            // 更新模态框内容
+            document.getElementById('modalDownloadLink').href = downloadLink;
+            document.getElementById('modalExtractCode').innerText = extractCode || '无需提取码';
+            document.getElementById('modalUUID').innerText = uuid;
+            
+            // 启动倒计时
+            let countdown = 60;
+            const confirmButton = document.getElementById('confirmButton');
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                confirmButton.innerText = `等待支付 (${countdown})`;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    confirmButton.innerText = '已支付，显示下载';
+                    confirmButton.disabled = false;
+                    confirmButton.classList.remove('btn-primary');
+                    confirmButton.classList.add('btn-success');
+                }
+            }, 1000);
+            
+            // 确认按钮点击事件
+            confirmButton.onclick = function() {
+                document.getElementById('downloadInfo').style.display = 'block';
+                confirmButton.style.display = 'none';
+            };
+        });
+        
+        downloadModal.addEventListener('hide.bs.modal', function () {
+            closeModal();
+        });
+        
+        function closeModal() {
+            clearInterval(countdownInterval);
+            document.getElementById('downloadInfo').style.display = 'none';
+            const confirmButton = document.getElementById('confirmButton');
+            confirmButton.innerText = '等待支付 (60)';
+            confirmButton.disabled = true;
+            confirmButton.classList.remove('btn-success');
+            confirmButton.classList.add('btn-primary');
+            confirmButton.style.display = 'block';
+        }
+
+        // 初始化 Bootstrap tooltips
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+    
+    <!-- 全局搜索功能 -->
+    <script src="../docs/js/global-search.js"></script>
+    
+    <!-- 页面保护脚本 -->
+    <script src="../docs/js/protection.min.js" defer></script>
+</body>
+</html>

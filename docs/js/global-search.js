@@ -25,6 +25,9 @@
         { file: 'section-11.html', name: '一拳超人系列' },
         { file: 'section-12.html', name: '游戏王系列' },
         { file: 'section-13.html', name: '三大民工漫' },
+        { file: 'section-14.html', name: 'JOJO 系列' },
+        { file: 'section-15.html', name: '宠物小精灵系列' },
+        { file: 'section-16.html', name: '哆啦 A 梦系列' },
         { file: 'section-98.html', name: '精选动画' },
         { file: 'section-99.html', name: '其他' }
     ];
