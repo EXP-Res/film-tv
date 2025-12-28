@@ -436,7 +436,7 @@
             <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
         </svg>
     </a>
-
+    
     <!-- 搜索结果模态框 -->
     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -453,117 +453,23 @@
           </div>
       </div>
     </div>
-
-    <!-- 回到顶部脚本 -->
-    <script>
-        // 回到顶部功能
-        window.onscroll = function() {
-            const backToTopBtn = document.getElementById('backToTop');
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                backToTopBtn.style.display = 'block';
-            } else {
-                backToTopBtn.style.display = 'none';
-            }
-        };
-
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // 复制到剪贴板功能
-        function copyToClipboard(elementId, event) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = event.currentTarget;
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<span style="color: green;">✓ 已复制</span>';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                }, 2000);
-            }).catch(err => {
-                console.error('复制失败:', err);
-                alert('复制失败，请手动复制');
-            });
-        }
-
-        // 模态框处理
-        let countdownInterval;
-        const downloadModal = document.getElementById('downloadModal');
-        
-        downloadModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const downloadLink = button.getAttribute('data-bs-download');
-            const uuid = button.getAttribute('data-uuid');
-            
-            // 提取百度网盘提取码
-            let extractCode = '';
-            if (downloadLink && downloadLink.includes('pwd=')) {
-                const match = downloadLink.match(/pwd=([a-zA-Z0-9]+)/);
-                if (match) {
-                    extractCode = match[1];
-                }
-            }
-            
-            // 更新模态框内容
-            document.getElementById('modalDownloadLink').href = downloadLink;
-            document.getElementById('modalExtractCode').innerText = extractCode || '无需提取码';
-            document.getElementById('modalUUID').innerText = uuid;
-            
-            // 启动倒计时
-            let countdown = 60;
-            const confirmButton = document.getElementById('confirmButton');
-            
-            countdownInterval = setInterval(() => {
-                countdown--;
-                confirmButton.innerText = `等待支付 (${countdown})`;
-                
-                if (countdown <= 0) {
-                    clearInterval(countdownInterval);
-                    confirmButton.innerText = '已支付，显示下载';
-                    confirmButton.disabled = false;
-                    confirmButton.classList.remove('btn-primary');
-                    confirmButton.classList.add('btn-success');
-                }
-            }, 1000);
-            
-            // 确认按钮点击事件
-            confirmButton.onclick = function() {
-                document.getElementById('downloadInfo').style.display = 'block';
-                confirmButton.style.display = 'none';
-            };
-        });
-        
-        downloadModal.addEventListener('hide.bs.modal', function () {
-            closeModal();
-        });
-        
-        function closeModal() {
-            clearInterval(countdownInterval);
-            document.getElementById('downloadInfo').style.display = 'none';
-            const confirmButton = document.getElementById('confirmButton');
-            confirmButton.innerText = '等待支付 (60)';
-            confirmButton.disabled = true;
-            confirmButton.classList.remove('btn-success');
-            confirmButton.classList.add('btn-primary');
-            confirmButton.style.display = 'block';
-        }
-
-        // 初始化 Bootstrap tooltips
-        document.addEventListener('DOMContentLoaded', function () {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
     
-    <!-- 全局搜索功能 -->
+    <!-- ==================== 脚本加载区 ==================== -->
+    
+    <!-- 1. 模态框核心功能 - 确保倒计时立即可用 -->
+    <script src="../docs/js/main.js"></script>
+    
+    <!-- 2. 图片懒加载 -->
+    <script src="../docs/js/lazy-load.js"></script>
+    
+    <!-- 3. 全局搜索功能 -->
     <script src="../docs/js/global-search.js"></script>
     
-    <!-- 页面保护脚本 -->
+    <!-- 4. 卡片锚点添加 -->
+    <script src="../docs/js/add-card-anchors.js"></script>
+    
+    <!-- 5. 页面保护脚本 -->
     <script src="../docs/js/protection.min.js" defer></script>
+    
 </body>
 </html>
