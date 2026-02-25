@@ -19,10 +19,89 @@ from jinja2 import Template
 # ===========================
 # 配置
 # ===========================
-EXCEL_FILE = "resource_config.xlsx"  # Excel 文件名
+EXCEL_FILE = "./templates/resource_config.xlsx"  # Excel 文件名
 OUTPUT_DIR = "sections"  # 输出目录
-TEMPLATE_SECTION = "sections/section-00.html"  # section 模板文件
+TEMPLATE_SECTION = "./templates/section-00.html"  # section 模板文件
 
+
+# ===========================
+# 主流程
+# ===========================
+def main():
+    """主函数"""
+    print("=" * 60)
+    print("HTML 生成器 - 从 Excel 生成网站页面")
+    print("=" * 60)
+    
+    # 检查 Excel 文件
+    if not os.path.exists(EXCEL_FILE):
+        print(f"❌ 错误: 找不到 {EXCEL_FILE}")
+        print(f"请在项目根目录放置 {EXCEL_FILE} 文件")
+        return
+    
+    try:
+        # 加载 Excel 数据
+        print(f"\n📖 读取 Excel 文件: {EXCEL_FILE}")
+        sheets = load_excel_data(EXCEL_FILE)
+        print(f"✓ 找到 {len(sheets)} 个 Sheet")
+        
+        # 创建输出目录
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        print(f"✓ 输出目录: {OUTPUT_DIR}/")
+        
+        # 处理每个 Sheet
+        sheet_list = list(sheets.keys())
+        
+        # Sheet0 用于生成 index.html (如果存在)
+        if sheet_list and sheet_list[0] == 'Sheet0':
+            print(f"\n📄 处理 Sheet0 -> index.html")
+            # generate_index_html 需要自定义实现
+            print("  (需手动调整 index.html 配置)")
+            sheet_list = sheet_list[1:]  # 移除 Sheet0
+        
+        # Sheet1-n 生成 section HTML
+        for idx, sheet_name in enumerate(sheet_list, start=1):
+            print(f"\n📄 处理 {sheet_name} -> section-{idx:02d}.html")
+            
+            sheet_data = sheets[sheet_name]
+            movies = sheet_data['data']
+            
+            if not movies:
+                print(f"  ⚠️  {sheet_name} 没有数据，跳过")
+                continue
+            
+            # 获取 section 标题 (从第一行的 sheet 名称或配置)
+            section_title = sheet_name
+            
+            # 生成 HTML
+            html_content = generate_section_html(
+                movies,
+                section_title,
+                idx
+            )
+            
+            # 保存文件
+            output_file = os.path.join(OUTPUT_DIR, f'section-{idx:02d}.html')
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            
+            print(f"  ✓ 生成 {len(movies)} 个卡片")
+            print(f"  ✓ 保存至: {output_file}")
+        
+        print("\n" + "=" * 60)
+        print("✅ 生成完成！")
+        print("=" * 60)
+        print("\n📝 后续步骤:")
+        print("1. 检查生成的 HTML 文件是否正确")
+        print("2. 更新 index.html 中的 section 卡片配置")
+        print("3. 更新 docs/js/count-badges.js 中的卡片数量")
+        print("4. 更新 docs/js/global-search.js 中的搜索配置")
+        
+    except Exception as e:
+        print(f"\n❌ 错误: {e}")
+        import traceback
+        traceback.print_exc()
+        
 
 # ===========================
 # 工具函数
@@ -205,83 +284,7 @@ def generate_index_html(sheets_config):
     return index_content
 
 
-# ===========================
-# 主流程
-# ===========================
-def main():
-    """主函数"""
-    print("=" * 60)
-    print("HTML 生成器 - 从 Excel 生成网站页面")
-    print("=" * 60)
-    
-    # 检查 Excel 文件
-    if not os.path.exists(EXCEL_FILE):
-        print(f"❌ 错误: 找不到 {EXCEL_FILE}")
-        print(f"请在项目根目录放置 {EXCEL_FILE} 文件")
-        return
-    
-    try:
-        # 加载 Excel 数据
-        print(f"\n📖 读取 Excel 文件: {EXCEL_FILE}")
-        sheets = load_excel_data(EXCEL_FILE)
-        print(f"✓ 找到 {len(sheets)} 个 Sheet")
-        
-        # 创建输出目录
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-        print(f"✓ 输出目录: {OUTPUT_DIR}/")
-        
-        # 处理每个 Sheet
-        sheet_list = list(sheets.keys())
-        
-        # Sheet0 用于生成 index.html (如果存在)
-        if sheet_list and sheet_list[0] == 'Sheet0':
-            print(f"\n📄 处理 Sheet0 -> index.html")
-            # generate_index_html 需要自定义实现
-            print("  (需手动调整 index.html 配置)")
-            sheet_list = sheet_list[1:]  # 移除 Sheet0
-        
-        # Sheet1-n 生成 section HTML
-        for idx, sheet_name in enumerate(sheet_list, start=1):
-            print(f"\n📄 处理 {sheet_name} -> section-{idx:02d}.html")
-            
-            sheet_data = sheets[sheet_name]
-            movies = sheet_data['data']
-            
-            if not movies:
-                print(f"  ⚠️  {sheet_name} 没有数据，跳过")
-                continue
-            
-            # 获取 section 标题 (从第一行的 sheet 名称或配置)
-            section_title = sheet_name
-            
-            # 生成 HTML
-            html_content = generate_section_html(
-                movies,
-                section_title,
-                idx
-            )
-            
-            # 保存文件
-            output_file = os.path.join(OUTPUT_DIR, f'section-{idx:02d}.html')
-            with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            
-            print(f"  ✓ 生成 {len(movies)} 个卡片")
-            print(f"  ✓ 保存至: {output_file}")
-        
-        print("\n" + "=" * 60)
-        print("✅ 生成完成！")
-        print("=" * 60)
-        print("\n📝 后续步骤:")
-        print("1. 检查生成的 HTML 文件是否正确")
-        print("2. 更新 index.html 中的 section 卡片配置")
-        print("3. 更新 docs/js/count-badges.js 中的卡片数量")
-        print("4. 更新 docs/js/global-search.js 中的搜索配置")
-        
-    except Exception as e:
-        print(f"\n❌ 错误: {e}")
-        import traceback
-        traceback.print_exc()
+
 
 
 if __name__ == '__main__':
