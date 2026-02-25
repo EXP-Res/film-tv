@@ -52,41 +52,8 @@ def main():
         # 处理每个 Sheet
         sheet_list = list(sheets.keys())
         
-        # Sheet0 用于生成 index.html (如果存在)
-        if sheet_list and sheet_list[0] == 'Sheet0':
-            print(f"\n📄 处理 Sheet0 -> index.html")
-            # generate_index_html 需要自定义实现
-            print("  (需手动调整 index.html 配置)")
-            sheet_list = sheet_list[1:]  # 移除 Sheet0
-        
-        # Sheet1-n 生成 section HTML
-        for idx, sheet_name in enumerate(sheet_list, start=1):
-            print(f"\n📄 处理 {sheet_name} -> section-{idx:02d}.html")
-            
-            sheet_data = sheets[sheet_name]
-            movies = sheet_data['data']
-            
-            if not movies:
-                print(f"  ⚠️  {sheet_name} 没有数据，跳过")
-                continue
-            
-            # 获取 section 标题 (从第一行的 sheet 名称或配置)
-            section_title = sheet_name
-            
-            # 生成 HTML
-            html_content = generate_section_html(
-                movies,
-                section_title,
-                idx
-            )
-            
-            # 保存文件
-            output_file = os.path.join(OUTPUT_DIR, f'section-{idx:02d}.html')
-            with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            
-            print(f"  ✓ 生成 {len(movies)} 个卡片")
-            print(f"  ✓ 保存至: {output_file}")
+        generate_sections(sheets, sheet_list[1:])
+        generate_index(sheets, sheet_list[0])
         
         print("\n" + "=" * 60)
         print("✅ 生成完成！")
@@ -102,6 +69,79 @@ def main():
         import traceback
         traceback.print_exc()
         
+
+
+def generate_sections(sheets, sheet_list) :
+    # Sheet1-n 生成 section HTML
+    for idx, sheet_name in enumerate(sheet_list):
+        print(f"\n📄 转换 {sheet_name} -> section-{idx:02d}.html")
+        
+        table = sheets[sheet_name]
+        header = table['headers']
+        lines = table['data']
+        print(header)
+        print(lines)
+
+        if not lines:
+            print(f"  ⚠️  {sheet_name} 没有数据，跳过")
+            continue
+        
+        # 获取 section 标题 (从第一行的 sheet 名称或配置)
+        section_title = sheet_name
+        
+        # 生成 HTML
+        html_content = generate_section(
+            lines,
+            section_title,
+            idx
+        )
+        
+        # 保存文件
+        output_file = os.path.join(OUTPUT_DIR, f'section-{idx:02d}.html')
+        # with open(output_file, 'w', encoding='utf-8') as f:
+        #     f.write(html_content)
+        
+        print(f"  ✓ 生成 {len(lines)} 个卡片")
+        print(f"  ✓ 保存至: {output_file}")
+
+
+def generate_section(sheet_data, section_title, section_number):
+    """生成 section HTML"""
+    template = load_template_section()
+    
+    # 替换标题
+    template = re.sub(
+        r'<h4[^>]*>XXXX系列</h4>',
+        f'<h4 id="section-{section_number:02d}" style="color:#ffff00; background-color:#000000; text-align: center;">{section_title}</h4>',
+        template
+    )
+    
+    # 生成卡片
+    cards_html = ''
+    for movie in sheet_data:
+        cards_html += generate_card_html(movie)
+    
+    # 替换卡片区域
+    # 找到 <!-- 这是模板。... --> 之间的空白区域，替换成卡片
+    template = re.sub(
+        r'(<!--\s*这是模板。[\s\S]*?-->\s*)(\s*</div>)',
+        f'\\1\n{cards_html}\n      \\2',
+        template
+    )
+    
+    return template
+
+
+
+
+def generate_index(sheets, sheet_list) :
+    # Sheet0 用于生成 index.html (如果存在)
+    if sheet_list and sheet_list[0] == 'Sheet0':
+        print(f"\n📄 处理 Sheet0 -> index.html")
+        # generate_index_html 需要自定义实现
+        print("  (需手动调整 index.html 配置)")
+        sheet_list = sheet_list[1:]  # 移除 Sheet0
+
 
 # ===========================
 # 工具函数
@@ -238,31 +278,7 @@ def generate_card_html(movie_data):
     return card_html
 
 
-def generate_section_html(sheet_data, section_title, section_number):
-    """生成 section HTML"""
-    template = load_template_section()
-    
-    # 替换标题
-    template = re.sub(
-        r'<h4[^>]*>XXXX系列</h4>',
-        f'<h4 id="section-{section_number:02d}" style="color:#ffff00; background-color:#000000; text-align: center;">{section_title}</h4>',
-        template
-    )
-    
-    # 生成卡片
-    cards_html = ''
-    for movie in sheet_data:
-        cards_html += generate_card_html(movie)
-    
-    # 替换卡片区域
-    # 找到 <!-- 这是模板。... --> 之间的空白区域，替换成卡片
-    template = re.sub(
-        r'(<!--\s*这是模板。[\s\S]*?-->\s*)(\s*</div>)',
-        f'\\1\n{cards_html}\n      \\2',
-        template
-    )
-    
-    return template
+
 
 
 def generate_index_html(sheets_config):
