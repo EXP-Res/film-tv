@@ -21,7 +21,8 @@ from jinja2 import Template
 # ===========================
 EXCEL_FILE = "./templates/resource_config.xlsx"  # Excel 文件名
 OUTPUT_DIR = "sections"  # 输出目录
-TEMPLATE_SECTION = "./templates/section-00.html"  # section 模板文件
+TEMPLATE_SECTION = "./templates/section-tpl.html"  # section 模板文件
+TEMPLATE_CARD = "./templates/card-tpl.html"  # card 模板文件
 
 
 # ===========================
@@ -106,30 +107,23 @@ def generate_sections(sheets, sheet_list) :
 
 
 def generate_section(sheet_data, section_title, section_number):
-    """生成 section HTML"""
-    template = load_template_section()
-    
-    # 替换标题
-    template = re.sub(
-        r'<h4[^>]*>XXXX系列</h4>',
-        f'<h4 id="section-{section_number:02d}" style="color:#ffff00; background-color:#000000; text-align: center;">{section_title}</h4>',
-        template
-    )
-    
-    # 生成卡片
+    """生成 section HTML（从模板渲染）"""
+    # 生成卡片 HTML
     cards_html = ''
     for movie in sheet_data:
         cards_html += generate_card_html(movie)
     
-    # 替换卡片区域
-    # 找到 <!-- 这是模板。... --> 之间的空白区域，替换成卡片
-    template = re.sub(
-        r'(<!--\s*这是模板。[\s\S]*?-->\s*)(\s*</div>)',
-        f'\\1\n{cards_html}\n      \\2',
-        template
-    )
+    # 准备模板上下文
+    context = {
+        'section_title': section_title,
+        'section_number': section_number,
+        'cards': cards_html
+    }
     
-    return template
+    # 加载 section 模板并渲染
+    tpl_text = load_template_section()
+    tpl = Template(tpl_text)
+    return tpl.render(**context)
 
 
 
@@ -214,68 +208,36 @@ def load_template_section():
         return f.read()
 
 
-def generate_card_html(movie_data):
-    """生成单个电影卡片 HTML"""
-    title = movie_data.get('标题', '未命名')
-    subtitle = movie_data.get('副标题', '')
-    description = movie_data.get('简介', '')
-    language = movie_data.get('语言', '日语')
-    subtitle_text = movie_data.get('字幕', '中文')
-    download_name = movie_data.get('网盘名称', '百度网盘')
-    download_link = movie_data.get('下载链接', 'TODO')
-    password = movie_data.get('解压密码', generate_uuid())
-    formats = movie_data.get('支持格式', 'mp4')
-    release_time = movie_data.get('上映时间', '待定')
-    poster_path = movie_data.get('海报路径', '../res/film/其他系列/默认/title.webp')
-    
-    # 生成格式徽章
-    format_badges = parse_formats(formats)
-    
-    # 副标题 HTML
-    subtitle_html = f'<h6><i>（{subtitle}）</i></h6>' if subtitle else ''
-    
-    # 生成下载按钮
-    if download_link.upper() == 'TODO':
-        download_button = f'''<button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal"
-                        data-bs-download="TODO"
-                        data-uuid="{password}">[{download_name}]</button>'''
-    else:
-        download_button = f'''<button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
-                        data-bs-download="{download_link}" 
-                        data-uuid="{password}">[{download_name}]</button>'''
-    
-    card_html = f'''        <div class="col-sm-12 col-md-6 col-lg-4">
-          <div class="card mb-3 bold-border" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <a href="{poster_path}" target="_blank">
-                  <img src="{poster_path}" class="card-img" alt="{title}">
-                </a>
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h4 class="card-title">{title}</h4>{subtitle_html}
-                  <ul class="list-group">
-                    <li class="list-group-item list-group-item-primary">{description}</li>
-                    <li class="list-group-item list-group-item-success">语言：{language}</li>
-                    <li class="list-group-item list-group-item-info">字幕：{subtitle_text}</li>
-                    <li class="list-group-item list-group-item-danger">下载：
-                      {download_button}
-                    </li>
-                    <li class="list-group-item list-group-item-warning">
-                      {format_badges}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">上映时间：{release_time}</small>
-            </div>
-          </div>
-        </div>
-'''
-    return card_html
+def load_template_card():
+    """加载 card 模板"""
+    with open(TEMPLATE_CARD, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def generate_card_html(card_data):
+    """生成单个电影卡片 HTML（从模板渲染）"""
+    # 准备字段
+    context = {
+        'title': card_data.get('标题', '未命名'),
+        'subtitle': card_data.get('副标题', ''),
+        'description': card_data.get('简介', ''),
+        'language': card_data.get('语言', '日语'),
+        'subtitle_text': card_data.get('字幕', '中文'),
+        'download_name': card_data.get('网盘名称', '百度网盘'),
+        'download_link': card_data.get('下载链接', 'TODO'),
+        'password': card_data.get('解压密码', generate_uuid()),
+        'formats': card_data.get('支持格式', 'mp4'),
+        'release_time': card_data.get('上映时间', '待定'),
+        'poster_path': card_data.get('海报路径', '../res/film/其他系列/默认/title.webp')
+    }
+
+    # 生成格式徽章（仍保留原有解析逻辑）
+    context['format_badges'] = parse_formats(context['formats'])
+
+    # 加载 card 模板并渲染
+    tpl_text = load_template_card()
+    tpl = Template(tpl_text)
+    return tpl.render(**context)
 
 
 

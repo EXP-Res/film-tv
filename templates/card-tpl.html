@@ -1,0 +1,42 @@
+        <div class="col-sm-12 col-md-6 col-lg-4">
+                  <div class="card mb-3 bold-border" style="max-width: 540px;">
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <a href="{{ poster_path }}" target="_blank">
+                          <img src="{{ poster_path }}" class="card-img" alt="{{ title }}">
+                        </a>
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h4 class="card-title">{{ title }}</h4>
+                          {% if subtitle %}
+                          <h6><i>（{{ subtitle }}）</i></h6>
+                          {% endif %}
+                          <ul class="list-group">
+                            <li class="list-group-item list-group-item-primary">{{ description }}</li>
+                            <li class="list-group-item list-group-item-success">语言：{{ language }}</li>
+                            <li class="list-group-item list-group-item-info">字幕：{{ subtitle_text }}</li>
+                            <li class="list-group-item list-group-item-danger">下载：
+                              {% if download_link and download_link != 'TODO' %}
+                              <a target="_blank" href="{{ download_link }}">[目录]</a>
+                              <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                                data-bs-download="{{ download_link }}" 
+                                data-uuid="{{ password }}">[{{ download_name }}]</button>
+                              {% else %}
+                              <button type="button" class="btn button-link" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                                data-bs-download="TODO" 
+                                data-uuid="{{ password }}">[{{ download_name }}]</button>
+                              {% endif %}
+                            </li>
+                            <li class="list-group-item list-group-item-warning">
+                              {{ format_badges | safe }}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <small class="text-muted">上映时间：{{ release_time }}</small>
+                    </div>
+                  </div>
+                </div>

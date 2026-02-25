@@ -111,21 +111,13 @@
     </div>
 
     <hr/>
-    <h4 id="section-08" style="color:#ffff00; background-color:#000000; text-align: center;">XXXX系列</h4>
+    <h4 id="section-{{ '%02d' | format(section_number) }}" style="color:#ffff00; background-color:#000000; text-align: center;">{{ section_title }}</h4>
     <hr/>
 
     <div class="container">
       <div class="row">
 
-<!--
-
-这是模板。
-引用 section-**.html 需要修改 3 处地方：
-1. index.html
-2. count-badges.js
-3. global-search.js
-
--->
+{{ cards }}
 
       </div>
     </div>
