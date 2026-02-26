@@ -38,35 +38,30 @@ def main():
         log.info(f"请在项目根目录放置 {EXCEL_FILE} 文件")
         return
     
-    try:
-        # 加载 Excel 数据
-        log.info(f"📖 读取 Excel 文件: {EXCEL_FILE}")
-        sheets = load_excel_data(EXCEL_FILE)
-        log.info(f"✓ 找到 {len(sheets)} 个 Sheet")
+    # 加载 Excel 数据
+    log.info(f"📖 读取 Excel 文件: {EXCEL_FILE}")
+    sheets = load_excel_data(EXCEL_FILE)
+    log.info(f"✓ 找到 {len(sheets)} 个 Sheet")
+    
+    # 创建输出目录
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    log.info(f"✓ 输出目录: {OUTPUT_DIR}/")
+    
+    # 处理每个 Sheet
+    sheet_list = list(sheets.keys())
+    
+    generate_sections(sheets, sheet_list[1:])
+    generate_index(sheets, sheet_list[0])
+    
+    log.info("=" * 60)
+    log.info("✅ 生成完成！")
+    log.info("=" * 60)
+    log.info("📝 后续步骤:")
+    log.info("1. 检查生成的 HTML 文件是否正确")
+    log.info("2. 更新 index.html 中的 section 卡片配置")
+    log.info("3. 更新 docs/js/count-badges.js 中的卡片数量")
+    log.info("4. 更新 docs/js/global-search.js 中的搜索配置")
         
-        # 创建输出目录
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-        log.info(f"✓ 输出目录: {OUTPUT_DIR}/")
-        
-        # 处理每个 Sheet
-        sheet_list = list(sheets.keys())
-        
-        generate_sections(sheets, sheet_list[1:])
-        generate_index(sheets, sheet_list[0])
-        
-        log.info("=" * 60)
-        log.info("✅ 生成完成！")
-        log.info("=" * 60)
-        log.info("📝 后续步骤:")
-        log.info("1. 检查生成的 HTML 文件是否正确")
-        log.info("2. 更新 index.html 中的 section 卡片配置")
-        log.info("3. 更新 docs/js/count-badges.js 中的卡片数量")
-        log.info("4. 更新 docs/js/global-search.js 中的搜索配置")
-        
-    except Exception as e:
-        log.info(f"\n❌ 错误: {e}")
-        import traceback
-        traceback.log.info_exc()
         
 
 
@@ -251,9 +246,6 @@ def load_template_card():
     
 
 
-
-
-
 def generate_index_html(sheets_config):
     """生成 index.html"""
     # 读取现有的 index.html
@@ -274,7 +266,8 @@ def generate_index_html(sheets_config):
 
 
 
-
-
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        log.error("❌ 发生未知异常")
