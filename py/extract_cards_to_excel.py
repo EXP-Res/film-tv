@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 解析 sections/*.html 中的卡片并导出到 Excel
-输出文件: templates/resource_config.xlsx
+输出文件: res/data.xlsx
 """
 import os
 import re
@@ -13,7 +13,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 
 
 SECTIONS_DIR = Path(__file__).resolve().parents[1] / 'sections'
-OUT_XLSX = Path(__file__).resolve().parents[1] / 'templates' / 'resource_config.xlsx'
+OUT_XLSX = Path(__file__).resolve().parents[1] / 'res' / 'data.xlsx'
 
 
 def extract_from_card(card_div):

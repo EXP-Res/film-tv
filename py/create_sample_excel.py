@@ -116,7 +116,7 @@ def create_sample_excel():
     ws2.column_dimensions['K'].width = 40
     
     # 保存文件
-    output_file = 'resource_config.xlsx'
+    output_file = 'data.xlsx'
     wb.save(output_file)
     print(f"✅ 示例 Excel 文件已创建: {output_file}")
     print("\n📋 Excel 结构说明:")

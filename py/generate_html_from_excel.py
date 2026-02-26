@@ -17,7 +17,7 @@ from color_log.clog import log
 # ===========================
 # 配置
 # ===========================
-EXCEL_FILE = "./templates/resource_config.xlsx"  # Excel 文件名
+EXCEL_FILE = "./res/data.xlsx"  # Excel 文件名
 OUTPUT_DIR = "sections"  # 输出目录
 TEMPLATE_SECTION = "./templates/section-tpl.html"  # section 模板文件
 TEMPLATE_CARD = "./templates/card-tpl.html"  # card 模板文件
@@ -85,8 +85,8 @@ def generate_sections(sheets, sheet_list) :
         
         # 保存文件
         html_path = os.path.join(OUTPUT_DIR, html_name)
-        # with open(html_path, 'w', encoding='utf-8') as f:
-        #     f.write(html_content)
+        with open(html_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
         
         log.info(f"✓ 生成 {len(lines)} 个卡片")
         log.info(f"✓ 已保存到: {html_path}")

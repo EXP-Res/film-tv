@@ -29,8 +29,8 @@ def run_command(cmd, description):
 
 def check_excel_file():
     """检查 Excel 文件是否存在"""
-    if not os.path.exists('resource_config.xlsx'):
-        print("⚠️  警告: resource_config.xlsx 不存在")
+    if not os.path.exists('data.xlsx'):
+        print("⚠️  警告: data.xlsx 不存在")
         print("将从示例生成...")
         return False
     return True
@@ -70,7 +70,7 @@ def main():
             f"{sys.executable} create_sample_excel.py",
             "创建示例 Excel 文件"
         ):
-            print("\n💡 提示: 请编辑 resource_config.xlsx，添加你的数据，然后重新运行此脚本")
+            print("\n💡 提示: 请编辑 data.xlsx，添加你的数据，然后重新运行此脚本")
             return True
     
     # 第三步: 生成 HTML
