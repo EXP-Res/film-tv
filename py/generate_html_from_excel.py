@@ -28,6 +28,47 @@ TEMPLATE_CARD = "./templates/card-tpl.html"  # card 模板文件
 TEMPLATE_INDEX = "./templates/index-tpl.html"  # index 模板文件
 TEMPLATE_COVER = "./templates/cover-tpl.html"  # cover 模板文件
 OUTPUT_INDEX = "index.html"  # index 输出文件
+README_FILE = "./res/README.md"  # README 配置文件
+
+# 全局变量配置
+GLOBAL_CONFIG = {}
+
+
+# ===========================
+# 工具函数 - 读取配置
+# ===========================
+def load_config_from_readme():
+    """从 README.md 中读取配置变量"""
+    global GLOBAL_CONFIG
+    
+    if not os.path.exists(README_FILE):
+        log.warn(f"⚠️ 找不到 {README_FILE}，使用默认配置")
+        GLOBAL_CONFIG = {}
+        return
+    
+    try:
+        with open(README_FILE, 'r', encoding=CHASET) as f:
+            content = f.read()
+        
+        # 匹配所有代码块中的 KEY=VALUE 对
+        # 匹配 ```\nKEY=VALUE\nKEY=VALUE\n...```
+        pattern = r'```\n([\s\S]*?)\n```'
+        matches = re.findall(pattern, content)
+        
+        for block in matches:
+            # 从每个代码块中提取 KEY=VALUE
+            lines = block.strip().split('\n')
+            for line in lines:
+                line = line.strip()
+                if '=' in line and not line.startswith('#'):
+                    key, value = line.split('=', 1)
+                    GLOBAL_CONFIG[key.strip()] = value.strip()
+        
+        log.info(f"✓ 从 README 加载 {len(GLOBAL_CONFIG)} 个配置")
+        
+    except Exception as e:
+        log.warn(f"⚠️ 读取 README 配置失败: {e}")
+        GLOBAL_CONFIG = {}
 
 
 # ===========================
@@ -37,6 +78,9 @@ def main():
     log.info(SPLIT_LINE)
     log.info("HTML 生成器 - 从 Excel 生成网站页面")
     log.info(SPLIT_LINE)
+    
+    # 加载配置变量
+    load_config_from_readme()
     
     # 检查 Excel 文件
     if not os.path.exists(EXCEL_FILE):
@@ -92,7 +136,7 @@ def generate_sections(sheets, sheet_list) :
         
         # 保存文件
         html_path = os.path.join(OUTPUT_DIR, html_name)
-        with open(html_path, 'w', encoding=CHASET) as f:
+        with open(html_path, 'w', encoding=CHASET, newline='') as f:
             f.write(html_content)
         
         log.info(f"✓ 生成 {len(lines)} 个卡片")
@@ -109,11 +153,13 @@ def generate_section(sheet_data, section_title, section_number):
         # log.debug(f"\n{card}")
     cards_html = '\n\n'.join(cards)
     
-    # 准备模板上下文
+    # 准备模板上下文，包含全局配置
     context = {
         'section_title': section_title,
         'section_number': section_number,
-        'cards': cards_html
+        'cards': cards_html,
+        # 添加全局配置变量
+        **GLOBAL_CONFIG
     }
     
     # 加载 section 模板并渲染
@@ -167,9 +213,11 @@ def generate_index(sheets, sheet_name) :
         covers.append(cover)
     covers_html = '\n\n'.join(covers)
     
-    # 准备模板上下文
+    # 准备模板上下文，包含全局配置
     context = {
-        'covers': covers_html
+        'covers': covers_html,
+        # 添加全局配置变量
+        **GLOBAL_CONFIG
     }
     
     # 加载 index 模板并渲染
@@ -178,7 +226,7 @@ def generate_index(sheets, sheet_name) :
     html_content = tpl.render(**context)
     
     # 保存文件
-    with open(OUTPUT_INDEX, 'w', encoding=CHASET) as f:
+    with open(OUTPUT_INDEX, 'w', encoding=CHASET, newline='') as f:
         f.write(html_content)
     
     log.info(f"✓ 生成 {len(lines)} 个 section 卡片")
@@ -332,7 +380,7 @@ def update_js_config(sheets, section_sheets):
 
 
 def update_seo_meta_js(index_data, section_sheets):
-    """更新 seo-meta.js 中的影视系列列表"""
+    """更新 seo-meta.js 中的影视系列列表和 SEO 配置"""
     seo_file = './docs/js/seo-meta.js'
     
     if not os.path.exists(seo_file):
@@ -342,12 +390,32 @@ def update_seo_meta_js(index_data, section_sheets):
     with open(seo_file, 'r', encoding=CHASET) as f:
         content = f.read()
     
+    # 更新 SEO 基础配置
+    seo_updates = {
+        "title:": f"title: '{GLOBAL_CONFIG.get('SEO_TITLE', '')}',",
+        "description:": f"description: '{GLOBAL_CONFIG.get('SEO_DESCRIPTION', '')}',",
+        "keywords:": f"keywords: '{GLOBAL_CONFIG.get('SEO_KEYWORDS', '')}',",
+        "author:": f"author: '{GLOBAL_CONFIG.get('SEO_AUTHOR', '')}',",
+        "siteName:": f"siteName: '{GLOBAL_CONFIG.get('SEO_SITE_NAME', '')}',",
+        "domain:": f"domain: '{GLOBAL_CONFIG.get('SEO_DOMAIN', '')}',",
+        "image:": f"image: '{GLOBAL_CONFIG.get('SEO_IMAGE', '')}',",
+        "locale:": f"locale: '{GLOBAL_CONFIG.get('SEO_LOCALE', '')}',"
+    }
+    
+    # 替换 SEO 配置
+    for key, replacement in seo_updates.items():
+        pattern = key + r".*?['\"].*?['\"],"
+        content = re.sub(pattern, replacement, content)
+    
     # 生成影视系列列表 JavaScript
     series_list = []
     for idx, data in enumerate(index_data[:len(section_sheets)]):
         name = data.get('主标题', '')
         description = data.get('概要', '')
         if name:
+            # 转义单引号
+            name = name.replace("'", "\\'")
+            description = description.replace("'", "\\'")
             series_list.append(f"            {{ name: '{name}', description: '{description}' }}")
     
     series_js = ',\n'.join(series_list)
@@ -358,7 +426,7 @@ def update_seo_meta_js(index_data, section_sheets):
     
     content = re.sub(pattern, replacement, content)
     
-    with open(seo_file, 'w', encoding=CHASET) as f:
+    with open(seo_file, 'w', encoding=CHASET, newline='') as f:
         f.write(content)
     
     log.info("✓ 已更新 docs/js/seo-meta.js")
@@ -389,7 +457,7 @@ def update_count_badges_js(section_sheets):
     
     content = re.sub(pattern, replacement, content)
     
-    with open(count_file, 'w', encoding=CHASET) as f:
+    with open(count_file, 'w', encoding=CHASET, newline='') as f:
         f.write(content)
     
     log.info("✓ 已更新 docs/js/count-badges.js")
@@ -421,7 +489,7 @@ def update_global_search_js(section_sheets):
     
     content = re.sub(pattern, replacement, content)
     
-    with open(search_file, 'w', encoding=CHASET) as f:
+    with open(search_file, 'w', encoding=CHASET, newline='') as f:
         f.write(content)
     
     log.info("✓ 已更新 docs/js/global-search.js")
