@@ -21,15 +21,15 @@
         { file: 'section-07.html', name: '数码暴龙系列' },
         { file: 'section-08.html', name: '推理探案系列' },
         { file: 'section-09.html', name: '异世界系列' },
-        { file: 'section-10.html', name: '刀剑神域系列' },
-        { file: 'section-11.html', name: '一拳超人系列' },
+        { file: 'section-10.html', name: '竞速赛车系列' },
+        { file: 'section-11.html', name: '超人英雄系列' },
         { file: 'section-12.html', name: '游戏王系列' },
         { file: 'section-13.html', name: '三大民工漫' },
         { file: 'section-14.html', name: 'JOJO 系列' },
         { file: 'section-15.html', name: '宠物小精灵系列' },
         { file: 'section-16.html', name: '哆啦 A 梦系列' },
-        { file: 'section-98.html', name: '精选动画' },
-        { file: 'section-99.html', name: '其他' }
+        { file: 'section-17.html', name: '精选动画系列' },
+        { file: 'section-18.html', name: '其他系列' }
     ];
 
     const MAX_RESULTS = 9; // 最多显示 9 个结果

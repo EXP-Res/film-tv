@@ -62,16 +62,12 @@ def main():
     if index_sheet:
         generate_index(sheets, index_sheet)
     
+    # 更新 JS 文件配置
+    update_js_config(sheets, section_sheets)
+    
     log.info(SPLIT_LINE)
     log.info("✅ 生成完成！")
     log.info(SPLIT_LINE)
-
-
-    log.info("📝 后续步骤:")
-    log.info("1. 检查生成的 HTML 文件是否正确")
-    log.info("2. 更新 docs/js/seo-meta.js 中的 SEO")
-    log.info("3. 更新 docs/js/count-badges.js 中的卡片数量")
-    log.info("4. 更新 docs/js/global-search.js 中的搜索配置")
     
     
         
@@ -315,9 +311,120 @@ def load_template_cover():
     """加载 cover 模板"""
     with open(TEMPLATE_COVER, 'r', encoding=CHASET) as f:
         return f.read()
+
+
+# ===========================
+# JS 配置更新函数
+# ===========================
+def update_js_config(sheets, section_sheets):
+    """更新所有 JS 配置文件"""
+    log.info("📝 更新 JS 配置文件...")
     
+    # 从 index sheet 获取数据
+    index_data = sheets.get('index', {}).get('data', [])
+    
+    # 更新各个 JS 文件
+    update_seo_meta_js(index_data, section_sheets)
+    update_count_badges_js(section_sheets)
+    update_global_search_js(section_sheets)
+    
+    log.info("✓ JS 配置更新完成")
 
 
+def update_seo_meta_js(index_data, section_sheets):
+    """更新 seo-meta.js 中的影视系列列表"""
+    seo_file = './docs/js/seo-meta.js'
+    
+    if not os.path.exists(seo_file):
+        log.warn(f"⚠️ 找不到 {seo_file}，跳过")
+        return
+    
+    with open(seo_file, 'r', encoding=CHASET) as f:
+        content = f.read()
+    
+    # 生成影视系列列表 JavaScript
+    series_list = []
+    for idx, data in enumerate(index_data[:len(section_sheets)]):
+        name = data.get('主标题', '')
+        description = data.get('概要', '')
+        if name:
+            series_list.append(f"            {{ name: '{name}', description: '{description}' }}")
+    
+    series_js = ',\n'.join(series_list)
+    
+    # 替换 movieSeries 配置
+    pattern = r"movieSeries:\s*\[[\s\S]*?\]"
+    replacement = f"movieSeries: [\n{series_js}\n        ]"
+    
+    content = re.sub(pattern, replacement, content)
+    
+    with open(seo_file, 'w', encoding=CHASET) as f:
+        f.write(content)
+    
+    log.info("✓ 已更新 docs/js/seo-meta.js")
+
+
+def update_count_badges_js(section_sheets):
+    """更新 count-badges.js 中的 SECTIONS 配置"""
+    count_file = './docs/js/count-badges.js'
+    
+    if not os.path.exists(count_file):
+        log.warn(f"⚠️ 找不到 {count_file}，跳过")
+        return
+    
+    with open(count_file, 'r', encoding=CHASET) as f:
+        content = f.read()
+    
+    # 生成 SECTIONS 配置
+    sections_list = []
+    for idx, sheet_name in enumerate(section_sheets):
+        file_name = f'section-{idx+1:02d}.html'
+        sections_list.append(f"        {{ file: '{file_name}', index: {idx} }}")
+    
+    sections_js = ',\n'.join(sections_list)
+    
+    # 替换 SECTIONS 配置
+    pattern = r"const SECTIONS = \[[\s\S]*?\];"
+    replacement = f"const SECTIONS = [\n{sections_js}\n    ];"
+    
+    content = re.sub(pattern, replacement, content)
+    
+    with open(count_file, 'w', encoding=CHASET) as f:
+        f.write(content)
+    
+    log.info("✓ 已更新 docs/js/count-badges.js")
+
+
+def update_global_search_js(section_sheets):
+    """更新 global-search.js 中的 SECTIONS 配置"""
+    search_file = './docs/js/global-search.js'
+    
+    if not os.path.exists(search_file):
+        log.warn(f"⚠️ 找不到 {search_file}，跳过")
+        return
+    
+    with open(search_file, 'r', encoding=CHASET) as f:
+        content = f.read()
+    
+    # 生成 SECTIONS 配置（需要从 Excel 读取 section 名称）
+    # 使用 sheet 名称作为 section 名称
+    sections_list = []
+    for idx, sheet_name in enumerate(section_sheets):
+        file_name = f'section-{idx+1:02d}.html'
+        sections_list.append(f"        {{ file: '{file_name}', name: '{sheet_name}' }}")
+    
+    sections_js = ',\n'.join(sections_list)
+    
+    # 替换 SECTIONS 配置
+    pattern = r"const SECTIONS = \[[\s\S]*?\];"
+    replacement = f"const SECTIONS = [\n{sections_js}\n    ];"
+    
+    content = re.sub(pattern, replacement, content)
+    
+    with open(search_file, 'w', encoding=CHASET) as f:
+        f.write(content)
+    
+    log.info("✓ 已更新 docs/js/global-search.js")
 
 
 if __name__ == '__main__':
