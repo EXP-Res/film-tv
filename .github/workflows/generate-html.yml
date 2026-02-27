@@ -42,21 +42,14 @@ jobs:
           echo "=== index.html 文件大小 ==="
           ls -lh index.html
 
-      - name: 配置 Git 用户信息
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
       - name: 提交变更
         run: |
-          if git diff --quiet; then
-            echo "没有文件变更，跳过提交"
-          else
-            git add -A
-            git commit -m "🤖 自动生成 HTML 页面 - $(date '+%Y-%m-%d %H:%M:%S')"
-            git push origin res
-            echo "✅ 成功提交变更到 res 分支"
-          fi
+          git diff
+          git config --global user.email "github-bot@example.com"
+          git config --global user.name "Github-Bot"
+          git add -A
+          git commit -m "🤖 自动生成 HTML 页面 - $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
+          git push
 
       - name: 显示执行结果
         if: always()
