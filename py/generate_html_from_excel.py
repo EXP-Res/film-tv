@@ -21,6 +21,9 @@ EXCEL_FILE = "./res/data.xlsx"  # Excel 文件名
 OUTPUT_DIR = "sections"  # 输出目录
 TEMPLATE_SECTION = "./templates/section-tpl.html"  # section 模板文件
 TEMPLATE_CARD = "./templates/card-tpl.html"  # card 模板文件
+TEMPLATE_INDEX = "./templates/index-tpl.html"  # index 模板文件
+TEMPLATE_COVER = "./templates/cover-tpl.html"  # cover 模板文件
+OUTPUT_INDEX = "index.html"  # index 输出文件
 
 
 # ===========================
@@ -50,8 +53,13 @@ def main():
     # 处理每个 Sheet
     sheet_list = list(sheets.keys())
     
-    generate_sections(sheets, sheet_list[1:])
-    generate_index(sheets, sheet_list[0])
+    # 分离 index sheet 和 section sheets
+    index_sheet = 'index' if 'index' in sheets else (sheet_list[0] if sheet_list else None)
+    section_sheets = [s for s in sheet_list if s != 'index']
+    
+    generate_sections(sheets, section_sheets)
+    if index_sheet:
+        generate_index(sheets, index_sheet, section_sheets)
     
     log.info("=" * 60)
     log.info("✅ 生成完成！")
@@ -144,13 +152,63 @@ def generate_card_html(card_data):
 
 
 # Sheet0 用于生成 index.html 
-def generate_index(sheets, sheet_name) :
+def generate_index(sheets, sheet_name, section_names) :
     log.info(f"📄 开始转换 Sheet 0 -> index.html")
 
     is_ok, header, lines = load_sheet_table(sheets, sheet_name)
     if not is_ok:
         log.warn(f"⚠️  {sheet_name} 没有数据，跳过")
         return
+    
+    # 生成 cover 卡片 HTML
+    covers = []
+    for idx, data in enumerate(lines, 1):
+        cover = generate_cover_html(data, idx)
+        covers.append(cover)
+    covers_html = '\n\n'.join(covers)
+    
+    # 准备模板上下文
+    context = {
+        'covers': covers_html
+    }
+    
+    # 加载 index 模板并渲染
+    tpl_text = load_template_index()
+    tpl = Template(tpl_text)
+    html_content = tpl.render(**context)
+    
+    # 保存文件
+    with open(OUTPUT_INDEX, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    log.info(f"✓ 生成 {len(lines)} 个 section 卡片")
+    log.info(f"✓ 已保存到: {OUTPUT_INDEX}")
+
+
+def generate_cover_html(cover_data, idx):
+    """生成 section cover 卡片 HTML（从模板渲染）"""
+    # 准备字段
+    tags_str = cover_data.get('标签列表', '')
+    tags = [t.strip() for t in tags_str.split(',') if t.strip()] if tags_str else []
+    
+    # 简单的图标映射（前两个标签）
+    tag_icons = ['joystick', 'stars']  # 默认图标
+    
+    context = {
+        'section_id': idx,
+        'section_link': f"./sections/section-{idx:02d}.html",
+        'poster_path': cover_data.get('封面图片路径', f'./res/covers/{idx:02d}.webp'),
+        'section_name': cover_data.get('主标题', ''),
+        'description': cover_data.get('概要', ''),
+        'count': cover_data.get('卡片数量', 0),
+        'tags': tags,
+        'tag_icons': tag_icons,
+    }
+    
+    # 加载 cover 模板并渲染
+    tpl_text = load_template_cover()
+    tpl = Template(tpl_text)
+    return tpl.render(**context)
 
 
 
@@ -238,10 +296,21 @@ def load_template_section():
         return f.read()
 
 
-
 def load_template_card():
     """加载 card 模板"""
     with open(TEMPLATE_CARD, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def load_template_index():
+    """加载 index 模板"""
+    with open(TEMPLATE_INDEX, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def load_template_cover():
+    """加载 cover 模板"""
+    with open(TEMPLATE_COVER, 'r', encoding='utf-8') as f:
         return f.read()
     
 
