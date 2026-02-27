@@ -12,7 +12,10 @@ jobs:
     
     steps:
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          ref: res
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -28,8 +31,6 @@ jobs:
         run: |
             python ./py/generate_html_from_excel.py
 
-      # 如果不希望污染 commit 记录，user.email 和 user.name 随便填即可
-      # Github Runner 是有权限提交到仓库的，只要 user 不是 owner ，当次 commit 不会被记录
       - name: Commit and push (if changed)
         run: |-
             git diff
@@ -37,7 +38,7 @@ jobs:
             git config --global user.name "Github-Bot"
             git add -A
             git commit -m "Updated by Github Bot" || exit 0
-            git push
+            git push origin res
 
       - name: 显示执行结果
         if: always()
