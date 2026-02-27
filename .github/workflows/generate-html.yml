@@ -1,0 +1,68 @@
+name: 生成 HTML 页面
+
+on:
+  push:
+    branches:
+      - res
+  workflow_dispatch:
+
+jobs:
+  generate-html:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        with:
+          ref: res
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install openpyxl jinja2 color-log
+
+      - name: 执行 HTML 生成脚本
+        run: |
+          cd ${{ github.workspace }}
+          python ./py/generate_html_from_excel.py
+
+      - name: 检查生成的文件
+        run: |
+          echo "=== 生成的文件列表 ==="
+          ls -la sections/ | head -20
+          ls -la docs/js/ | grep -E "(seo-meta|count-badges|global-search)"
+          echo ""
+          echo "=== index.html 文件大小 ==="
+          ls -lh index.html
+
+      - name: 配置 Git 用户信息
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: 提交变更
+        run: |
+          if git diff --quiet; then
+            echo "没有文件变更，跳过提交"
+          else
+            git add -A
+            git commit -m "🤖 自动生成 HTML 页面 - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push origin res
+            echo "✅ 成功提交变更到 res 分支"
+          fi
+
+      - name: 显示执行结果
+        if: always()
+        run: |
+          echo "✨ HTML 生成工作流完成！"
+          echo ""
+          echo "📊 生成统计:"
+          echo "- Section 文件: $(ls -1 sections/*.html 2>/dev/null | wc -l) 个"
+          echo "- Index 文件: $([ -f index.html ] && echo '存在' || echo '不存在')"
