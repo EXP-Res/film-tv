@@ -8,6 +8,7 @@
 """
 
 import os
+import re
 import random
 import string
 from openpyxl import load_workbook
@@ -17,6 +18,9 @@ from color_log.clog import log
 # ===========================
 # 配置
 # ===========================
+CHASET = 'utf-8'
+SPLIT_LINE = "=" * 60
+SHEET_INDEX = 'index'
 EXCEL_FILE = "./res/data.xlsx"  # Excel 文件名
 OUTPUT_DIR = "sections"  # 输出目录
 TEMPLATE_SECTION = "./templates/section-tpl.html"  # section 模板文件
@@ -30,10 +34,9 @@ OUTPUT_INDEX = "index.html"  # index 输出文件
 # 主流程
 # ===========================
 def main():
-    """主函数"""
-    log.info("=" * 60)
+    log.info(SPLIT_LINE)
     log.info("HTML 生成器 - 从 Excel 生成网站页面")
-    log.info("=" * 60)
+    log.info(SPLIT_LINE)
     
     # 检查 Excel 文件
     if not os.path.exists(EXCEL_FILE):
@@ -52,28 +55,28 @@ def main():
     
     # 处理每个 Sheet
     sheet_list = list(sheets.keys())
-    
-    # 分离 index sheet 和 section sheets
-    index_sheet = 'index' if 'index' in sheets else (sheet_list[0] if sheet_list else None)
-    section_sheets = [s for s in sheet_list if s != 'index']
+    index_sheet = SHEET_INDEX if SHEET_INDEX in sheets else (sheet_list[0] if sheet_list else None)
+    section_sheets = [s for s in sheet_list if s != SHEET_INDEX]
     
     generate_sections(sheets, section_sheets)
     if index_sheet:
-        generate_index(sheets, index_sheet, section_sheets)
+        generate_index(sheets, index_sheet)
     
-    log.info("=" * 60)
+    log.info(SPLIT_LINE)
     log.info("✅ 生成完成！")
-    log.info("=" * 60)
+    log.info(SPLIT_LINE)
+
+
     log.info("📝 后续步骤:")
     log.info("1. 检查生成的 HTML 文件是否正确")
-    log.info("2. 更新 index.html 中的 section 卡片配置")
+    log.info("2. 更新 docs/js/seo-meta.js 中的 SEO")
     log.info("3. 更新 docs/js/count-badges.js 中的卡片数量")
     log.info("4. 更新 docs/js/global-search.js 中的搜索配置")
-        
+    
+    
         
 
-
-# Sheet1-n 生成 section HTML
+# Sheet 1-n 生成 section HTML
 def generate_sections(sheets, sheet_list) :
     for idx, sheet_name in enumerate(sheet_list):
         idx += 1
@@ -93,7 +96,7 @@ def generate_sections(sheets, sheet_list) :
         
         # 保存文件
         html_path = os.path.join(OUTPUT_DIR, html_name)
-        with open(html_path, 'w', encoding='utf-8') as f:
+        with open(html_path, 'w', encoding=CHASET) as f:
             f.write(html_content)
         
         log.info(f"✓ 生成 {len(lines)} 个卡片")
@@ -125,6 +128,7 @@ def generate_section(sheet_data, section_title, section_number):
 
 def generate_card_html(card_data):
     """生成单个电影卡片 HTML（从模板渲染）"""
+
     # 准备字段
     context = {
         'poster_path': card_data.get('封面图片路径', '../res/placeholder.webp'), 
@@ -151,8 +155,8 @@ def generate_card_html(card_data):
 
 
 
-# Sheet0 用于生成 index.html 
-def generate_index(sheets, sheet_name, section_names) :
+# Sheet 0 生成 index.html 
+def generate_index(sheets, sheet_name) :
     log.info(f"📄 开始转换 Sheet 0 -> index.html")
 
     is_ok, header, lines = load_sheet_table(sheets, sheet_name)
@@ -178,7 +182,7 @@ def generate_index(sheets, sheet_name, section_names) :
     html_content = tpl.render(**context)
     
     # 保存文件
-    with open(OUTPUT_INDEX, 'w', encoding='utf-8') as f:
+    with open(OUTPUT_INDEX, 'w', encoding=CHASET) as f:
         f.write(html_content)
     
     log.info(f"✓ 生成 {len(lines)} 个 section 卡片")
@@ -189,16 +193,9 @@ def generate_cover_html(cover_data, idx):
     """生成 section cover 卡片 HTML（从模板渲染）"""
     # 准备字段
     tags_str = cover_data.get('标签列表', '')
-    
-    # 支持中英文逗号和分号切割
-    import re
-    # 按中英文逗号和分号分割: , ， ; ；
     tags = re.split(r'[,，;；]', tags_str)
-    # 去掉首尾空格并过滤空值
-    tags = [t.strip() for t in tags if t.strip()]
-    
-    # 简单的图标映射（前两个标签）
-    tag_icons = ['joystick', 'stars']  # 默认图标
+    tags = [f'<i class="bi bi-star"></i> {t.strip()}<br/>' for t in tags if t.strip()]
+    tags_list = '\n                                  '.join(tags)
     
     context = {
         'section_id': idx,
@@ -207,8 +204,7 @@ def generate_cover_html(cover_data, idx):
         'section_name': cover_data.get('主标题', ''),
         'description': cover_data.get('概要', ''),
         'count': cover_data.get('卡片数量', 0),
-        'tags': tags,
-        'tag_icons': tag_icons,
+        'tags': tags_list,
     }
     
     # 加载 cover 模板并渲染
@@ -259,13 +255,8 @@ def parse_formats(format_str):
     if not format_str or format_str.strip() == '':
         return ''
     
-    # 支持中英文逗号和分号切割
-    import re
-    # 按中英文逗号和分号分割: , ， ; ；
     formats = re.split(r'[,，;；]', format_str)
-    # 去掉首尾空格并过滤空值
     formats = [f.strip() for f in formats if f.strip()]
-    
     return '\n                      '.join([get_badge_html(f) for f in formats])
 
 
@@ -304,46 +295,28 @@ def load_excel_data(excel_file):
 
 def load_template_section():
     """加载 section 模板"""
-    with open(TEMPLATE_SECTION, 'r', encoding='utf-8') as f:
+    with open(TEMPLATE_SECTION, 'r', encoding=CHASET) as f:
         return f.read()
 
 
 def load_template_card():
     """加载 card 模板"""
-    with open(TEMPLATE_CARD, 'r', encoding='utf-8') as f:
+    with open(TEMPLATE_CARD, 'r', encoding=CHASET) as f:
         return f.read()
 
 
 def load_template_index():
     """加载 index 模板"""
-    with open(TEMPLATE_INDEX, 'r', encoding='utf-8') as f:
+    with open(TEMPLATE_INDEX, 'r', encoding=CHASET) as f:
         return f.read()
 
 
 def load_template_cover():
     """加载 cover 模板"""
-    with open(TEMPLATE_COVER, 'r', encoding='utf-8') as f:
+    with open(TEMPLATE_COVER, 'r', encoding=CHASET) as f:
         return f.read()
     
 
-
-def generate_index_html(sheets_config):
-    """生成 index.html"""
-    # 读取现有的 index.html
-    index_file = "index.html"
-    if not os.path.exists(index_file):
-        log.info(f"警告: {index_file} 不存在，将创建新文件")
-        return None
-    
-    with open(index_file, 'r', encoding='utf-8') as f:
-        index_content = f.read()
-    
-    # 从 Excel 的 Sheet0 获取配置
-    # 这里需要根据 Sheet0 的数据结构来更新 index.html
-    # 假设 Sheet0 包含: section_id, section_title, description, image_url, count
-    
-    log.info("✓ index.html 配置完成 (需手动调整)")
-    return index_content
 
 
 
