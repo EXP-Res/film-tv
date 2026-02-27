@@ -189,7 +189,13 @@ def generate_cover_html(cover_data, idx):
     """生成 section cover 卡片 HTML（从模板渲染）"""
     # 准备字段
     tags_str = cover_data.get('标签列表', '')
-    tags = [t.strip() for t in tags_str.split(',') if t.strip()] if tags_str else []
+    
+    # 支持中英文逗号和分号切割
+    import re
+    # 按中英文逗号和分号分割: , ， ; ；
+    tags = re.split(r'[,，;；]', tags_str)
+    # 去掉首尾空格并过滤空值
+    tags = [t.strip() for t in tags if t.strip()]
     
     # 简单的图标映射（前两个标签）
     tag_icons = ['joystick', 'stars']  # 默认图标
@@ -253,7 +259,13 @@ def parse_formats(format_str):
     if not format_str or format_str.strip() == '':
         return ''
     
-    formats = [f.strip() for f in format_str.split(',')]
+    # 支持中英文逗号和分号切割
+    import re
+    # 按中英文逗号和分号分割: , ， ; ；
+    formats = re.split(r'[,，;；]', format_str)
+    # 去掉首尾空格并过滤空值
+    formats = [f.strip() for f in formats if f.strip()]
+    
     return '\n                      '.join([get_badge_html(f) for f in formats])
 
 
