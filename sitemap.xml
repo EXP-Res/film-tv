@@ -4,76 +4,138 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- 导航主页 - 物理分页架构 -->
   <url>
-    <loc>https://yourdomain.com/</loc>
-    <lastmod>2025-01-12</lastmod>
+    <loc>https://exp-res.github.io/film-tv/</loc>
+    <title></title>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- 世界奇妙物语系列 - 独立页面 -->
   <url>
-    <loc>https://yourdomain.com/sections/section-01.html</loc>
-    <lastmod>2025-01-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 藤原龙也系列 - 独立页面 -->
-  <url>
-    <loc>https://yourdomain.com/sections/section-02.html</loc>
-    <lastmod>2025-01-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 憨豆先生系列 - 独立页面 -->
-  <url>
-    <loc>https://yourdomain.com/sections/section-03.html</loc>
-    <lastmod>2025-01-12</lastmod>
+    <loc>https://exp-res.github.io/film-tv/sections/section-01.html</loc>
+    <title>世界奇妙物语系列</title>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- 生化危机系列 - 独立页面 -->
   <url>
-    <loc>https://yourdomain.com/sections/section-04.html</loc>
-    <lastmod>2025-01-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 哈利波特系列 - 独立页面 -->
-  <url>
-    <loc>https://yourdomain.com/sections/section-05.html</loc>
-    <lastmod>2025-01-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 死神来了系列 - 独立页面 -->
-  <url>
-    <loc>https://yourdomain.com/sections/section-06.html</loc>
-    <lastmod>2025-01-12</lastmod>
+    <loc>https://exp-res.github.io/film-tv/sections/section-02.html</loc>
+    <title>藤原龙也系列</title>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- 动画系列 - 独立页面 -->
   <url>
-    <loc>https://yourdomain.com/sections/section-07.html</loc>
-    <lastmod>2025-01-12</lastmod>
+    <loc>https://exp-res.github.io/film-tv/sections/section-03.html</loc>
+    <title>憨豆先生系列</title>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- 其他系列 - 独立页面 -->
   <url>
-    <loc>https://yourdomain.com/sections/section-99.html</loc>
-    <lastmod>2025-01-12</lastmod>
+    <loc>https://exp-res.github.io/film-tv/sections/section-04.html</loc>
+    <title>生化危机系列</title>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-05.html</loc>
+    <title>哈利波特系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-06.html</loc>
+    <title>死神来了系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-07.html</loc>
+    <title>数码暴龙系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-08.html</loc>
+    <title>推理探案系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-09.html</loc>
+    <title>异世界系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-10.html</loc>
+    <title>竞速赛车系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-11.html</loc>
+    <title>超人英雄系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-12.html</loc>
+    <title>游戏王系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-13.html</loc>
+    <title>三大民工漫</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-14.html</loc>
+    <title>JOJO 系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-15.html</loc>
+    <title>宠物小精灵系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-16.html</loc>
+    <title>哆啦 A 梦系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-17.html</loc>
+    <title>精选动画系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://exp-res.github.io/film-tv/sections/section-18.html</loc>
+    <title>其他系列</title>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
 </urlset>

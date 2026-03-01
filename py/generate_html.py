@@ -11,6 +11,7 @@ import os
 import re
 import random
 import string
+from datetime import datetime
 from openpyxl import load_workbook
 from jinja2 import Template
 from color_log.clog import log
@@ -34,11 +35,13 @@ TEMPLATE_SECTION = "./templates/section-tpl.html"  # section 模板文件
 TEMPLATE_CARD = "./templates/card-tpl.html"  # card 模板文件
 TEMPLATE_INDEX = "./templates/index-tpl.html"  # index 模板文件
 TEMPLATE_COVER = "./templates/cover-tpl.html"  # cover 模板文件
+TEMPLATE_SITEMAP = "./templates/sitemap-tpl.html"  # sitemap 模板文件
+TEMPLATE_LINK = "./templates/link-tpl.html"  # sitemap link 模板文件
 
 # 输出路径
 OUTPUT_DIR = "./sections"  # 站点分类 sections 输出路径
-OUTPUT_INDEX = "./index.html"  # index 输出文件
-
+OUTPUT_INDEX = "./index.html"  # 首页 index 输出文件
+OUTPUT_SITEMAP = './sitemap.xml' # 搜索引擎 sitemap
 
 # ===========================
 # 主流程
@@ -75,6 +78,9 @@ def main():
     
     # 更新 JS 文件配置
     update_js_config(sheets, section_sheets)
+    
+    # 生成 sitemap.xml
+    generate_sitemap(sheets, section_sheets)
     
     log.info(SPLIT_LINE)
     log.info("✅ 生成完成！")
@@ -495,6 +501,66 @@ def update_global_search_js(section_sheets):
         f.write(content)
     
     log.info("✓ 已更新 docs/js/global-search.js")
+
+
+def generate_sitemap(sheets, section_sheets):
+    """生成 sitemap.xml 文件（使用模板）"""
+    # 获取域名配置
+    domain = GLOBAL_CONFIG.get('SEO_DOMAIN', 'https://yourdomain.com/').rstrip('/')
+    
+    # 获取当前日期
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    # 生成所有 URL 条目
+    links = []
+    
+    # 添加首页
+    link_context = {
+        'loc': f'{domain}/',
+        'lastmod': today,
+        'changefreq': 'weekly',
+        'priority': '1.0'
+    }
+    links.append(render_template(TEMPLATE_LINK, link_context))
+    
+    # 添加各个 section 页面，从 Excel 获取标题
+    for idx, sheet_name in enumerate(section_sheets, 1):
+        # 从 index sheet 获取对应 section 的信息
+        index_data = sheets.get('index', {}).get('data', [])
+        section_info = index_data[idx - 1] if idx <= len(index_data) else {}
+        section_title = section_info.get('主标题', f'Section {idx}')
+        
+        link_context = {
+            'loc': f'{domain}/sections/section-{idx:02d}.html',
+            'title': section_title,
+            'lastmod': today,
+            'changefreq': 'monthly',
+            'priority': '0.8'
+        }
+        links.append(render_template(TEMPLATE_LINK, link_context))
+    
+    item_links = '\n'.join(links)
+    
+    # 使用 sitemap 模板渲染
+    context = {
+        'item_links': item_links
+    }
+    
+    sitemap_content = render_template(TEMPLATE_SITEMAP, context)
+    
+    # 保存 sitemap.xml
+    with open(OUTPUT_SITEMAP, 'w', encoding=CHASET, newline='') as f:
+        f.write(sitemap_content)
+    
+    log.info(f"✓ 已生成 {OUTPUT_SITEMAP} ({len(section_sheets)} 个 section)")
+
+
+def render_template(template_path, context):
+    """渲染模板"""
+    with open(template_path, 'r', encoding=CHASET) as f:
+        tpl_text = f.read()
+    tpl = Template(tpl_text)
+    return tpl.render(**context)
 
 
 if __name__ == '__main__':
