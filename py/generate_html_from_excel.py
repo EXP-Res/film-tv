@@ -20,34 +20,81 @@ from color_log.clog import log
 # ===========================
 CHASET = 'utf-8'
 SPLIT_LINE = "=" * 60
+
+# 网站数据文件
+EXCEL_FILE = "./res/data.xlsx"
 SHEET_INDEX = 'index'
-EXCEL_FILE = "./res/data.xlsx"  # Excel 文件名
-OUTPUT_DIR = "sections"  # 输出目录
+
+# 网站配置文件
+GLOBAL_FILE = "./res/README.md"
+GLOBAL_CONFIG = {}
+
+# 生成网页模板文件
 TEMPLATE_SECTION = "./templates/section-tpl.html"  # section 模板文件
 TEMPLATE_CARD = "./templates/card-tpl.html"  # card 模板文件
 TEMPLATE_INDEX = "./templates/index-tpl.html"  # index 模板文件
 TEMPLATE_COVER = "./templates/cover-tpl.html"  # cover 模板文件
-OUTPUT_INDEX = "index.html"  # index 输出文件
-README_FILE = "./res/README.md"  # README 配置文件
 
-# 全局变量配置
-GLOBAL_CONFIG = {}
+# 输出路径
+OUTPUT_DIR = "./sections"  # 站点分类 sections 输出路径
+OUTPUT_INDEX = "./index.html"  # index 输出文件
 
+
+# ===========================
+# 主流程
+# ===========================
+def main():
+    log.info(SPLIT_LINE)
+    log.info("HTML 生成器 - 从 Excel 生成网站页面")
+    log.info(SPLIT_LINE)
+    
+    # 加载配置变量
+    load_config()
+    
+    # 加载 Excel 数据
+    log.info(f"📖 读取 Excel 文件: {EXCEL_FILE}")
+    if not os.path.exists(EXCEL_FILE):
+        log.info(f"❌ 错误: 找不到 {EXCEL_FILE}")
+        return
+    sheets = load_excel_data(EXCEL_FILE)
+    log.info(f"✓ 找到 {len(sheets)} 个 Sheet")
+    
+    # Sheet 分类（首页 + section）
+    sheet_list = list(sheets.keys())
+    index_sheet = SHEET_INDEX if SHEET_INDEX in sheets else (sheet_list[0] if sheet_list else None)
+    section_sheets = [s for s in sheet_list if s != SHEET_INDEX]
+
+    # 创建输出目录
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    log.info(f"✓ 输出目录: {OUTPUT_DIR}/")
+
+    # 生成网页
+    generate_sections(sheets, section_sheets)
+    if index_sheet:
+        generate_index(sheets, index_sheet)
+    
+    # 更新 JS 文件配置
+    update_js_config(sheets, section_sheets)
+    
+    log.info(SPLIT_LINE)
+    log.info("✅ 生成完成！")
+    log.info(SPLIT_LINE)
+    
+    
 
 # ===========================
 # 工具函数 - 读取配置
 # ===========================
-def load_config_from_readme():
-    """从 README.md 中读取配置变量"""
+def load_config():
     global GLOBAL_CONFIG
     
-    if not os.path.exists(README_FILE):
-        log.warn(f"⚠️ 找不到 {README_FILE}，使用默认配置")
+    if not os.path.exists(GLOBAL_FILE):
+        log.warn(f"⚠️ 找不到 {GLOBAL_FILE}，使用默认配置")
         GLOBAL_CONFIG = {}
         return
     
     try:
-        with open(README_FILE, 'r', encoding=CHASET) as f:
+        with open(GLOBAL_FILE, 'r', encoding=CHASET) as f:
             content = f.read()
         
         # 匹配所有代码块中的 KEY=VALUE 对
@@ -69,51 +116,6 @@ def load_config_from_readme():
     except Exception as e:
         log.warn(f"⚠️ 读取 README 配置失败: {e}")
         GLOBAL_CONFIG = {}
-
-
-# ===========================
-# 主流程
-# ===========================
-def main():
-    log.info(SPLIT_LINE)
-    log.info("HTML 生成器 - 从 Excel 生成网站页面")
-    log.info(SPLIT_LINE)
-    
-    # 加载配置变量
-    load_config_from_readme()
-    
-    # 检查 Excel 文件
-    if not os.path.exists(EXCEL_FILE):
-        log.info(f"❌ 错误: 找不到 {EXCEL_FILE}")
-        log.info(f"请在项目根目录放置 {EXCEL_FILE} 文件")
-        return
-    
-    # 加载 Excel 数据
-    log.info(f"📖 读取 Excel 文件: {EXCEL_FILE}")
-    sheets = load_excel_data(EXCEL_FILE)
-    log.info(f"✓ 找到 {len(sheets)} 个 Sheet")
-    
-    # 创建输出目录
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    log.info(f"✓ 输出目录: {OUTPUT_DIR}/")
-    
-    # 处理每个 Sheet
-    sheet_list = list(sheets.keys())
-    index_sheet = SHEET_INDEX if SHEET_INDEX in sheets else (sheet_list[0] if sheet_list else None)
-    section_sheets = [s for s in sheet_list if s != SHEET_INDEX]
-    
-    generate_sections(sheets, section_sheets)
-    if index_sheet:
-        generate_index(sheets, index_sheet)
-    
-    # 更新 JS 文件配置
-    update_js_config(sheets, section_sheets)
-    
-    log.info(SPLIT_LINE)
-    log.info("✅ 生成完成！")
-    log.info(SPLIT_LINE)
-    
-    
         
 
 # Sheet 1-n 生成 section HTML
